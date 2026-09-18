@@ -330,32 +330,33 @@ body.lcars-mkii-op-active #banner-container{
 }
 #lcars-mkii-area-3 #lcars-mkii-personnel-container{
    position:relative;
-   width:158px;
-   height:249px;
+   width:152px;
+   height:240px;
    overflow:hidden;
-   left:-5px
+   left:0
 }
 #lcars-mkii-area-3 #lcars-mkii-personnel-record{
    position:absolute;
    inset:0;
-   width:225px;
-   height:355px;background:#050909;
+   width:152px;
+   height:240px;
+   background:#050909;
    color:#ec9438;
    font-family:"Archivo Narrow",Arial,sans-serif;
    overflow:hidden;
 }
-#lcars-mkii-area-3 .lcars-personnel-ribbon {
+#lcars-mkii-area-3 .lcars-personnel-ribbon{
    position:absolute;
    left:0;
    top:0;
-   width:225px;
-   height:41.5px;
+   width:152px;
+   height:28px;
    display:flex;
    align-items:center;
    justify-content:center;
    gap:0;
    white-space:nowrap;
-   font:600 24px/41.5px Antonio,Arial,sans-serif;
+   font:600 16px/28px Antonio,Arial,sans-serif;
    color:#ec9438;
    background:transparent;
    opacity:1;
@@ -366,8 +367,8 @@ body.lcars-mkii-op-active #banner-container{
    content:"";
    position:absolute;
    left:0;
-   top:12.75px;
-   width:225px;
+   top:6px;
+   width:152px;
    height:16px;
    background:#ec9438;
    border-radius:999px;
@@ -384,27 +385,27 @@ body.lcars-mkii-op-active #banner-container{
    position:relative;
    z-index:1;
    display:block;
-   padding:0 18px;
+   padding:0 8px;
    background:#000;
    color:#ec9438;
-   font:600 24px/41.5px Antonio,Arial,sans-serif;
+   font:600 16px/28px Antonio,Arial,sans-serif;
    visibility:visible
 }
 #lcars-mkii-area-3 .lcars-personnel-identity{
    position:absolute;
    left:8px;
-   top:41px;
-   width:209px;
-   height:92px;
+   top:32px;
+   width:136px;
+   height:70px;
    display:flex;
-   gap:10px;
+   gap:8px;
    align-items:center
 }
 #lcars-mkii-area-3 .lcars-personnel-portrait-wrap{
-   width:82px;
-   height:92px;
-   transform:translateY(-2px);
-   flex:0 0 82px;
+   width:62px;
+   height:70px;
+   transform:none;
+   flex:0 0 62px;
    padding:0;
    border:0;
    border-radius:0;
@@ -431,32 +432,37 @@ body.lcars-mkii-op-active #banner-container{
 }
 #lcars-mkii-area-3 .lcars-personnel-rank{
    min-height:15px;
-   font:600 15px/19px Antonio,Arial,sans-serif;
+   font:600 12px/15px Antonio,Arial,sans-serif;
    color:#cf6769;
    white-space:nowrap
 }
 #lcars-mkii-area-3 .lcars-personnel-name{
-   min-height:29px;
-   font:600 24px/29px Antonio,Arial,sans-serif;
+   min-height:24px;
+   font:600 20px/24px Antonio,Arial,sans-serif;
    color:#ec9438;
    white-space:nowrap
 }
 #lcars-mkii-area-3 .lcars-personnel-rule{
    position:absolute;
    left:8px;
-   top:138px;
-   width:209px;
+   top:106px;
+   width:136px;
    height:4px;
    background:#ec9438
 }
 #lcars-mkii-area-3 .lcars-personnel-content{
-   position:absolute;left:8px;top:147px;width:209px;height:197px;overflow:hidden
+   position:absolute;
+   left:8px;
+   top:115px;
+   width:136px;
+   height:117px;
+   overflow:hidden
 }
 #lcars-mkii-area-3 .lcars-personnel-section{
-   margin:0 0 7px;overflow:visible
+   margin:0 0 5px;overflow:visible
 }
 #lcars-mkii-area-3 .lcars-personnel-label{
-   font:600 13px/16px Antonio,Arial,sans-serif;
+   font:600 11px/14px Antonio,Arial,sans-serif;
    color:#cf6769;
    opacity:0;
    white-space:nowrap
@@ -465,11 +471,11 @@ body.lcars-mkii-op-active #banner-container{
    opacity:1
 }
 #lcars-mkii-area-3 .lcars-personnel-value,#lcars-mkii-area-3 .lcars-personnel-summary,#lcars-mkii-area-3 .lcars-personnel-posting-value{
-   font:15px/17px "Archivo Narrow",Arial,sans-serif;
+   font:13px/15px "Archivo Narrow",Arial,sans-serif;
    color:#ec9438
 }
 #lcars-mkii-area-3 .lcars-personnel-summary{
-   max-height:112px;
+   max-height:75px;
    overflow:hidden
 }
 #lcars-mkii-area-3 .lcars-personnel-posting-value{
@@ -477,19 +483,19 @@ body.lcars-mkii-op-active #banner-container{
 }
 #lcars-mkii-area-3 .lcars-personnel-cursor{
    display:inline-block;
-   width:3px;
-   height:15px;
-   margin-right:4px;
+   width:2px;
+   height:13px;
+   margin-right:3px;
    background:#ec9438;
    vertical-align:-2px;
    animation:lcars-personnel-cursor-blink .65s steps(1) infinite
 }
 #lcars-mkii-area-3 .lcars-personnel-rank .lcars-personnel-cursor{
-   height:11px;
+   height:10px;
    background:#cf6769
 }
 #lcars-mkii-area-3 .lcars-personnel-name .lcars-personnel-cursor{
-   height:20px
+   height:17px
 }
 @keyframes lcars-personnel-cursor-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 
