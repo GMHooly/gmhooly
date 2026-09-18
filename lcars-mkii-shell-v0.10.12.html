@@ -57,7 +57,7 @@ body{
    opacity:1;
    pointer-events:none
 }
-.lcars-component-overlay span{
+.lcars-component-overlay-text{
    display:block;
    position:absolute;
    left:0;
@@ -66,12 +66,16 @@ body{
    height:100%;
    box-sizing:border-box;
    padding:8px;
+   margin:0;
    color:#000;
    font-family:Antonio,Arial,sans-serif;
    font-size:12px;
    font-weight:700;
    line-height:1.5;
-   white-space:pre-wrap
+   white-space:pre-wrap;
+   overflow:hidden;
+   visibility:visible;
+   opacity:1
 }
 .lcars-mkii-content-anchor{
    font-family:Arial,sans-serif;
