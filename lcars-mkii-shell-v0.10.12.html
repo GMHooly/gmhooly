@@ -1,7 +1,7 @@
 <style id="lcars-mkii-shell-style">
 /* =========================================================
    LCARS Mk II - OP CUSTOM CSS
-   v0.10.41 - Matched Area Headers
+   v0.10.29 - Area Background Cleanup
    ========================================================= */
 
 /* =========================================================
@@ -346,40 +346,51 @@ body.lcars-mkii-op-active #banner-container{
    transform:scale(.675556);
    transform-origin:top left
 }
-#lcars-mkii-area-3 .lcars-personnel-header{
+#lcars-mkii-area-3 .lcars-personnel-ribbon {
    position:absolute;
-   left:8px;
+   left:0;
    top:8px;
-   width:209px;
+   width:225px;
    height:28px;
    display:flex;
    align-items:center;
-   gap:8px;
+   justify-content:center;
+   gap:0;
    white-space:nowrap;
+   font:600 16px/28px Antonio,Arial,sans-serif;
    color:#ec9438;
+   background:transparent;
+   opacity:1;
+   transition:none;
    z-index:2
 }
-#lcars-mkii-area-3 .lcars-personnel-header-cap{
-   width:24px;
+#lcars-mkii-area-3 .lcars-personnel-ribbon::before{
+   content:"";
+   position:absolute;
+   left:0;
+   top:6px;
+   width:225px;
    height:16px;
-   flex:0 0 24px;
    background:#ec9438;
-   border-radius:16px 0 0 16px
+   border-radius:8px;
+   z-index:0
 }
-#lcars-mkii-area-3 .lcars-personnel-header-title{
+#lcars-mkii-area-3 .lcars-personnel-ribbon.is-visible{
+   opacity:1
+}
+#lcars-mkii-area-3 .lcars-personnel-ribbon-cap,
+#lcars-mkii-area-3 .lcars-personnel-ribbon-rail{
+   display:none
+}
+#lcars-mkii-area-3 .lcars-personnel-title{
+   position:relative;
+   z-index:1;
    display:block;
-   flex:0 0 auto;
+   padding:0 12px;
+   background:#000;
    color:#ec9438;
    font:600 16px/28px Antonio,Arial,sans-serif;
-   letter-spacing:0;
-   text-transform:uppercase
-}
-#lcars-mkii-area-3 .lcars-personnel-header-rail{
-   display:block;
-   flex:1 1 auto;
-   min-width:16px;
-   height:16px;
-   background:#ec9438
+   visibility:visible
 }
 #lcars-mkii-area-3 .lcars-personnel-identity{
    position:absolute;
@@ -509,36 +520,40 @@ body.lcars-mkii-op-active #banner-container{
    height:28px;
    display:flex;
    align-items:center;
-   gap:8px;
+   justify-content:center;
+   gap:0;
    z-index:3;
-   background:#000;
+   background:transparent;
    color:#ec9438;
    font:600 16px/28px Antonio,Arial,sans-serif;
    text-transform:uppercase;
    white-space:nowrap
 }
-#lcars-mkii-area-4 .lcars-live-feed-cap{
-   display:block;
-   width:24px;
+#lcars-mkii-area-4 .lcars-live-feed-header::before{
+   content:"";
+   position:absolute;
+   left:0;
+   top:6px;
+   width:152px;
    height:16px;
-   flex:0 0 24px;
    background:#ec9438;
-   border-radius:16px 0 0 16px
+   border-radius:8px;
+   z-index:0
+}
+#lcars-mkii-area-4 .lcars-live-feed-cap,
+#lcars-mkii-area-4 .lcars-live-feed-rail{
+   display:none
 }
 #lcars-mkii-area-4 .lcars-live-feed-title{
+   position:relative;
+   z-index:1;
    display:block;
    flex:0 0 auto;
+   padding:0 12px;
+   background:#000;
    color:#ec9438;
    font:600 16px/28px Antonio,Arial,sans-serif;
    letter-spacing:0;
-   text-transform:uppercase;
-}
-#lcars-mkii-area-4 .lcars-live-feed-rail{
-   display:block;
-   flex:1 1 auto;
-   min-width:8px;
-   height:16px;
-   background:#ec9438
 }
 #lcars-mkii-area-4 .lcars-live-feed-viewport{
    position:absolute;
