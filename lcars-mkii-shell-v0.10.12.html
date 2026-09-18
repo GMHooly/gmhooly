@@ -54,6 +54,10 @@ body{
    z-index:3;
    pointer-events:none;
 }
+/* Number overlays must override OP's global .main-content span colour rule. */
+#lcars-mkii-op-shell-host .lcars-component-overlay span{
+   color:#000000 !important;
+}
 .lcars-mkii-content-anchor{
    font-family:Arial,sans-serif;
    color:#f79a69;
