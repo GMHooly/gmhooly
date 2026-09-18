@@ -51,8 +51,27 @@ body{
 }
 .lcars-component-overlay{
    position:absolute;
-   z-index:3;
+   z-index:10;
+   display:block;
+   visibility:visible;
+   opacity:1;
    pointer-events:none
+}
+.lcars-component-overlay span{
+   display:block;
+   position:absolute;
+   left:0;
+   top:0;
+   width:100%;
+   height:100%;
+   box-sizing:border-box;
+   padding:8px;
+   color:#000;
+   font-family:Antonio,Arial,sans-serif;
+   font-size:12px;
+   font-weight:700;
+   line-height:1.5;
+   white-space:pre-wrap
 }
 .lcars-mkii-content-anchor{
    font-family:Arial,sans-serif;
