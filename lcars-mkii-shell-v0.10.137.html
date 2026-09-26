@@ -1,0 +1,777 @@
+<style id="lcars-mkii-shell-style">
+/* =========================================================
+   LCARS Mk II - OP CUSTOM CSS
+   v0.10.137 - Page Configuration / Assembly v1.8
+   ========================================================= */
+
+/* =========================================================
+   AREA 1 - PAGE SHELL / MAIN CONTENT
+   ========================================================= */
+
+*{box-sizing:border-box}
+html,body{
+   margin:0;
+   padding:0;
+   min-height:100%;
+   background:#000
+}
+body{
+   font-family:Arial,sans-serif
+}
+
+.lcars-page{
+   position:relative;
+   width:100%;
+   margin:0 auto;
+   overflow:auto
+}
+.lcars-stage-shell{
+   position:relative;
+   margin:0 auto;
+   flex:0 0 auto
+}
+.lcars-stage{
+   position:absolute;
+   left:0;
+   top:0;
+   transform-origin:top left;
+   overflow:visible
+}
+.lcars-component-scene{
+   z-index:1
+}
+.lcars-panel{
+   position:absolute
+}
+.lcars-panel-content{
+   position:relative;
+   width:100%;
+   height:100%;
+   z-index:2
+}
+.lcars-component-overlay{
+   position:absolute;
+   z-index:3;
+   pointer-events:none;
+}
+.lcars-number-overlay-layer{
+   position:absolute;
+   left:0;
+   top:0;
+   width:1024px;
+   height:768px;
+   z-index:1000;
+   pointer-events:none;
+}
+.lcars-number-overlay{
+   position:absolute;
+   box-sizing:border-box;
+   padding:8px;
+   display:flex;
+   justify-content:flex-start;
+   align-items:flex-start;
+   font-family:Antonio,Arial,sans-serif;
+   font-size:12px;
+   font-weight:500;
+   line-height:1.5;
+   letter-spacing:0;
+   text-transform:uppercase;
+   white-space:pre-wrap;
+   color:#000000 !important;
+   -webkit-text-fill-color:#000000 !important;
+   text-shadow:none !important;
+   z-index:1001;
+}
+
+.lcars-mkii-content-anchor{
+   font-family:Arial,sans-serif;
+   color:#f79a69;
+   background:transparent
+}
+.lcars-mkii-content-anchor>*{
+   max-width:100%
+}
+.lcars-text{
+   font-family:"Archivo Narrow",Arial Narrow,Arial,sans-serif
+}
+.lcars-label{
+   font-family:Antonio,Arial,sans-serif
+}
+.lcars-component{
+   display:block;
+   overflow:visible
+}
+.lcars-asset{
+   position:absolute
+}
+.lcars-asset__viewport,.lcars-image-frame__body{
+   position:absolute;
+   inset:0;
+   overflow:hidden
+}
+.lcars-asset__viewport img,.lcars-image-frame__image{
+   position:absolute;
+   inset:0;
+   width:100%;
+   height:100%;
+   display:block
+}
+.lcars-asset__border{
+   position:absolute;
+   inset:0;
+   pointer-events:none
+}
+.lcars-image-frame{
+   position:absolute;
+   overflow:visible;
+   background:#000
+}
+.lcars-image-frame__body{
+   border:var(--frame-thickness) solid var(--frame-colour);
+   border-radius:var(--frame-radius);
+   overflow:hidden;
+   z-index:1
+}
+.lcars-image-frame__body .lcars-image-frame__image{
+   border:var(--image-border-width) solid var(--image-border-colour);
+   border-radius:max(0px,calc(var(--frame-radius) - var(--frame-thickness)));
+   object-fit:contain
+}
+.lcars-image-frame__title{
+   position:absolute;
+   z-index:4;
+   top:0;
+   right:calc(var(--frame-thickness) + 12px);
+   min-height:calc(var(--frame-thickness) * 1.8);
+   padding:0 10px;background:#000;
+   font-family:Antonio,Arial,sans-serif;
+   font-size:max(14px,calc(var(--frame-thickness) * 1.25));
+   line-height:1.05;
+   text-transform:uppercase;
+   display:flex;
+   align-items:center;
+   white-space:nowrap
+}
+.lcars-image-frame__base{
+   position:absolute;
+   z-index:3;
+   left:var(--frame-thickness);
+   bottom:calc(var(--frame-thickness) * -0.5);
+   height:var(--frame-thickness);
+   display:flex;
+   gap:8px;
+   align-items:stretch
+}
+.lcars-image-frame__base i{
+   display:block;min-width:var(--frame-thickness);
+   height:100%;
+   font-style:normal
+}
+.lcars-image-frame__base i:first-child{
+   width:calc(var(--frame-thickness) * 5)
+}
+.lcars-image-frame__base i:last-child{
+   width:calc(var(--frame-thickness) * 5)
+}
+
+#lcars-mkii-op-shell-host{
+   width:1360px;
+   min-width:1360px;
+   background:transparent;
+   overflow:visible;
+   position:relative;
+   left:0;
+   margin-left:calc((100% - 1360px)/2);
+   transform:none;
+   z-index:10
+}
+#lcars-mkii-op-shell-host .lcars-page{
+   margin:0;
+   overflow:visible;
+   width:1360px;
+   min-width:1360px
+}
+
+html.lcars-mkii-op-active{overflow-x:hidden}
+
+html.lcars-mkii-op-active,body.lcars-mkii-op-active,body.lcars-mkii-op-active #wrapper,body.lcars-mkii-op-active #content,body.lcars-mkii-op-active #campaign-summary-row{
+   background:#000
+}
+body.lcars-mkii-op-active #content > .campaign-landing-page-container{
+   display:none
+}
+body.lcars-mkii-op-active #banner-container{
+   position:relative;
+   z-index:1
+}
+
+/* Area 1 OP compatibility */
+body.lcars-mkii-op-active #lcars-mkii-area-1{
+   overflow-y:auto;
+   overflow-x:hidden;
+   scrollbar-width:none;
+   -ms-overflow-style:none
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1::-webkit-scrollbar{
+   display:none;
+   width:0;
+   height:0
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1 .campaign-landing-page-container{
+   width:100%;
+   max-width:none;
+   margin:0;
+   padding:0
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1 .wiki-page.section{
+   width:100%;
+   max-width:none;
+   margin:0;
+   padding:0
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1 .wiki-page.section > p:first-child{
+   margin:0;
+   padding:0
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1 .wiki-page.section > p:first-child img{
+   display:block;
+   width:100%;
+   max-width:none;
+   height:auto;
+   margin:0;
+   padding:0
+}
+body.lcars-mkii-op-active #lcars-mkii-area-1 .wiki-edit{
+   display:none
+}
+
+/* =========================================================
+   SHARED COMPONENTS - AREAS 3 AND 4
+   ========================================================= */
+
+.lcars-area-header{
+   position:absolute;
+   left:0;
+   top:0;
+   width:152px;
+   height:28px;
+   display:flex;
+   align-items:center;
+   gap:8px;
+   z-index:20;
+   background:#000;
+   color:#ec9438;
+   font:600 16px/28px Antonio,Arial,sans-serif;
+   text-transform:uppercase;
+   white-space:nowrap;
+   overflow:hidden
+}
+.lcars-area-header.is-visible{opacity:1}
+.lcars-area-header-cap{
+   display:block;
+   width:24px;
+   height:16px;
+   flex:0 0 24px;
+   background:#ec9438;
+   border-radius:16px 0 0 16px
+}
+.lcars-area-header-title{
+   display:block;
+   flex:0 0 auto;
+   color:#ec9438;
+   font:600 16px/28px Antonio,Arial,sans-serif;
+   letter-spacing:0
+}
+.lcars-area-header-rail{
+   display:block;
+   flex:1 1 auto;
+   min-width:8px;
+   height:16px;
+   background:#ec9438
+}
+
+/* Area 3 and Area 4 use the same visible header geometry,
+   spacing and typography. */
+#lcars-mkii-area-3 .lcars-personnel-identity{
+   position:absolute;
+   left:5px;
+   top:28px;
+   width:141px;
+   height:62px;
+   display:flex;
+   gap:7px;
+   align-items:center
+}
+#lcars-mkii-area-3 .lcars-personnel-portrait-wrap{
+   width:55px;
+   height:62px;
+   position:relative;
+   top:-1px;
+   flex:0 0 55px;
+   padding:0;
+   border:0;
+   border-radius:0;
+   background:#050909;
+   overflow:hidden
+}
+#lcars-mkii-area-3 .lcars-personnel-portrait{
+   width:100%;
+   height:100%;
+   object-fit:contain;
+   opacity:0;
+   transition:opacity .5s ease
+}
+#lcars-mkii-area-3 .lcars-personnel-portrait.is-visible{
+   opacity:1
+}
+#lcars-mkii-area-3 .lcars-personnel-ident-text{
+   min-width:0;
+   display:flex;
+   flex-direction:column;
+   justify-content:center;
+   overflow:hidden;
+   font-family:Antonio,Arial,sans-serif;text-transform:uppercase
+}
+#lcars-mkii-area-3 .lcars-personnel-rank{
+   min-height:15px;
+   font:600 10px/13px Antonio,Arial,sans-serif;
+   color:#cf6769;
+   white-space:nowrap
+}
+#lcars-mkii-area-3 .lcars-personnel-name{
+   min-height:13px;
+   font:600 16px/20px Antonio,Arial,sans-serif;
+   color:#ec9438;
+   white-space:nowrap
+}
+#lcars-mkii-area-3 .lcars-personnel-rule{
+   position:absolute;
+   left:5px;
+   top:93px;
+   width:141px;
+   height:3px;
+   background:#ec9438
+}
+#lcars-mkii-area-3 .lcars-personnel-content{
+   position:absolute;left:5px;top:99px;width:141px;height:133px;overflow:hidden
+}
+#lcars-mkii-area-3 .lcars-personnel-section{
+   margin:0 0 5px;overflow:visible
+}
+#lcars-mkii-area-3 .lcars-personnel-label{
+   font:600 9px/11px Antonio,Arial,sans-serif;
+   color:#cf6769;
+   opacity:0;
+   white-space:nowrap
+}
+#lcars-mkii-area-3 .lcars-personnel-label.is-visible{
+   opacity:1
+}
+#lcars-mkii-area-3 .lcars-personnel-value,#lcars-mkii-area-3 .lcars-personnel-summary,#lcars-mkii-area-3 .lcars-personnel-posting-value{
+   font:10px/12px "Archivo Narrow",Arial,sans-serif;
+   color:#ec9438
+}
+#lcars-mkii-area-3 .lcars-personnel-summary{
+   max-height:76px;
+   overflow:hidden
+}
+#lcars-mkii-area-3 .lcars-personnel-posting-value{
+   white-space:nowrap
+}
+#lcars-mkii-area-3 .lcars-personnel-cursor{
+   display:inline-block;
+   width:2px;
+   height:10px;
+   margin-right:3px;
+   background:#ec9438;
+   vertical-align:-2px;
+   animation:lcars-personnel-cursor-blink .65s steps(1) infinite
+}
+#lcars-mkii-area-3 .lcars-personnel-rank .lcars-personnel-cursor{
+   height:8px;
+   background:#cf6769
+}
+#lcars-mkii-area-3 .lcars-personnel-name .lcars-personnel-cursor{
+   height:13px
+}
+@keyframes lcars-personnel-cursor-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* =========================================================
+   AREA 2 - GAMEMASTER
+   ========================================================= */
+
+#lcars-mkii-area-2{
+   overflow:hidden;
+   width:184px;
+   height:64px;
+   color:#ec9438;
+   background:transparent
+}
+#lcars-mkii-area-2 .game-master{
+   width:100%;
+   max-width:none;
+   margin:0}
+#lcars-mkii-area-2 .game-master{
+   display:none
+}
+
+#lcars-mkii-area-2 .lcars-gm-card{
+    position:relative;
+    display:block;
+    width:184px;
+    height:64px;
+    margin:0;
+    padding:0;
+    background:#050909;
+    color:#ec9438;
+    font-family:Antonio,Arial,sans-serif;
+    overflow:hidden;
+    z-index:5;
+}
+
+/* GM profile name */
+#lcars-mkii-area-2 .lcars-gm-name{
+    position:absolute;
+    left:30px;
+    top:32px;
+    width:auto;
+    height:auto;
+    margin:0;
+    padding:0;
+    color:#9695c9;
+    font:600 16px/18px Antonio,Arial,sans-serif;
+    text-transform:uppercase;
+    white-space:nowrap;
+    overflow:visible;
+    text-decoration:none;
+    z-index:4;
+}
+
+#lcars-mkii-area-2 .lcars-gm-name:hover{
+    color:#9695c9;
+    text-decoration:none;
+}
+
+/* GM portrait */
+#lcars-mkii-area-2 .lcars-gm-portrait{
+    position:absolute;
+    right:8px;
+    top:8px;
+    display:block;
+    width:56px;
+    height:48px;
+    margin:0;
+    padding:0;
+    object-fit:contain;
+    border:0;
+    outline:0;
+    border-radius:0;
+    background:transparent;
+    z-index:3;
+}
+
+/* =========================================================
+   AREA 3 - PERSONNEL
+   ========================================================= */
+
+#lcars-mkii-area-3{
+   overflow:hidden;
+   background:transparent
+}
+#lcars-mkii-area-3 #lcars-mkii-personnel-container{
+   position:relative;
+   width:152px;
+   height:240px;
+   overflow:hidden;
+   left:-5px;
+   top:5px;
+   z-index:1
+}
+#lcars-mkii-area-3 #lcars-mkii-personnel-record{
+   position:absolute;
+   inset:0;
+   z-index:1;
+   width:152px;
+   height:240px;
+   background:#050909;
+   color:#ec9438;
+   font-family:"Archivo Narrow",Arial,sans-serif;
+   overflow:hidden
+}
+
+/* =========================================================
+   AREA 4 - CAMPAIGN STREAM / ASSEMBLY CONTEXT
+   ========================================================= */
+
+#lcars-mkii-area-4 .campaign-stream-module{
+   position:absolute;
+   left:-10px;
+   top:12px;
+   width:184px;
+   height:172px;
+   margin:0;
+   padding:0 8px;
+   box-sizing:border-box;
+   overflow-y:auto;
+   overflow-x:hidden;
+   scrollbar-width:none;
+   -ms-overflow-style:none;
+   background:transparent;
+   border:0;
+   color:#ec9438;
+   font-family:"Archivo Narrow",Arial,sans-serif
+}
+#lcars-mkii-area-4 .campaign-stream-module::-webkit-scrollbar{
+   display:none;
+   width:0;
+   height:0
+}
+#lcars-mkii-area-4 .campaign-stream-module .module-header,
+#lcars-mkii-area-4 .campaign-stream-module .module-title,
+#lcars-mkii-area-4 .campaign-stream-module h2,
+#lcars-mkii-area-4 .campaign-stream-module h3{
+   display:none
+}
+#lcars-mkii-area-4 .campaign-stream-module ul,
+#lcars-mkii-area-4 .campaign-stream-module ol{
+   margin:0;
+   padding:0;
+   list-style:none
+}
+#lcars-mkii-area-4 .campaign-stream-module li{
+   margin:0 0 6px;
+   padding:0;
+   color:#ec9438;
+   font:10px/12px "Archivo Narrow",Arial,sans-serif
+}
+#lcars-mkii-area-4 .campaign-stream-module a{
+   color:#ec9438;
+   text-decoration:none
+}
+#lcars-mkii-area-4 .campaign-stream-module img{
+   position:relative;
+   left:3px
+}
+#lcars-mkii-area-4 .campaign-stream-module .details{
+   position:relative;
+   left:10px
+}
+
+#lcars-mkii-area-4{overflow:hidden}
+
+/* Keep the Assembly column visible. The parent panel is transparent;
+   only the left content field receives the black background. */
+   
+.lcars-mkii-op-active .lcars-panel.panel-panel-5{
+    position:relative;
+    background:transparent;
+}
+
+.lcars-mkii-op-active .lcars-panel.panel-panel-5 > .lcars-panel-content{
+    position:relative;
+    background:transparent;
+    z-index:1;
+}
+
+/* =========================================================
+   AREA 5 - FAN INFORMATION / DIPLOMATIC STATUS
+   ========================================================= */
+
+/* Area 5 - EASY ADJUSTMENT CONTROLS */
+#lcars-mkii-area-5{
+   --area5-text-size:10pt;
+   --area5-line-height:14px;
+   --area5-label-left:8px;
+   --area5-value-left:75px;
+   --area5-row-2-top:33px;
+   --area5-row-3-top:53px;
+   --area5-button-left:96px;
+   --area5-button-top:28px;
+   --area5-button-width:80px;
+   --area5-button-height:45px;
+   position:relative;
+   overflow:hidden;
+   background:transparent
+}
+
+/* Common text */
+#lcars-mkii-area-5 .lcars-area5-label,
+#lcars-mkii-area-5 .lcars-area5-value{
+   position:absolute;
+   margin:0;
+   padding:0;
+   height:var(--area5-line-height);
+   line-height:var(--area5-line-height);
+   white-space:nowrap;
+   text-decoration:none;
+   font-size:var(--area5-text-size);
+   letter-spacing:0;
+   transform:none;
+   overflow:visible
+}
+
+/* Labels */
+#lcars-mkii-area-5 .lcars-area5-label{
+   left:var(--area5-label-left);
+   color:#d04f4f;
+   font-family:Antonio,Arial,sans-serif;
+   font-weight:700;
+   text-align:left
+}
+
+/* Values */
+#lcars-mkii-area-5 .lcars-area5-value{
+   left:var(--area5-value-left);
+   color:#ec9438;
+   font-family:Antonio,Arial,sans-serif;
+   font-weight:500
+}
+
+/* Row positions */
+#lcars-mkii-area-5 .lcars-area5-environment,
+#lcars-mkii-area-5 .lcars-area5-game-system{
+   top:var(--area5-row-1-top)
+}
+#lcars-mkii-area-5 .lcars-area5-game-system{width:auto}
+
+#lcars-mkii-area-5 .lcars-area5-population,
+#lcars-mkii-area-5 .lcars-area5-fan-count{
+   top:var(--area5-row-2-top)
+}
+
+#lcars-mkii-area-5 .lcars-area5-status,
+#lcars-mkii-area-5 .lcars-area5-comment-count{
+   top:var(--area5-row-3-top)
+}
+
+/* Fan button */
+#lcars-mkii-area-5 .lcars-area5-button{
+   position:absolute;
+   left:var(--area5-button-left);
+   top:var(--area5-button-top);
+   width:var(--area5-button-width);
+   height:var(--area5-button-height);
+   margin:0;
+   padding:0;
+   border:0;
+   background:transparent;
+   display:block;
+   cursor:pointer;
+   z-index:5
+}
+#lcars-mkii-area-5 .lcars-area5-button img{
+   display:block;
+   width:80px;
+   height:45px;
+   margin:0;
+   padding:0;
+   border:0
+}
+
+/* Hidden source element */
+#lcars-mkii-area-5 .lcars-area5-source{display:none}
+
+/* Area 5 navigation/status compatibility */
+.lcars-mkii-op-active .front-nav-container{
+   display:none
+}
+.lcars-mkii-op-active #campaign-nav{
+   display:none
+}
+.lcars-mkii-op-active .mobile-nav-top-bar{
+   display:none
+}
+.lcars-mkii-menu-hit-layer{
+   position:absolute
+}
+.lcars-mkii-menu-hit{
+   position:absolute
+}
+
+.lcars-menu-item{position:absolute;pointer-events:auto}
+.lcars-menu-item::before{
+   content:"";
+   position:absolute;
+   left:0;
+   top:0;
+   width:128px;
+   height:32px;
+   background:rgba(255,255,255,.16);
+   opacity:0;
+   transition:opacity .15s ease;
+   pointer-events:none;
+   z-index:1
+}
+.lcars-menu-item:hover::before{opacity:1;border-radius:8px}
+.lcars-menu-item.is-active::before{
+    content:"";
+    position:absolute;
+    left:32px;
+    top:0;
+    width:96px;
+    height:32px;
+    background:#ff2200;
+    opacity:.72;
+    border-radius:0 8px 8px 0;
+    pointer-events:none;
+    z-index:1
+}
+.lcars-menu-item.is-active:hover::before{left:32px;width:96px;background:#ff2200;opacity:.82;border-radius:0 8px 8px 0}
+.lcars-mkii-menu-hit{position:absolute;z-index:2}
+
+/* =========================================================
+   PAGE CONFIGURATION - DYNAMIC AREA TITLES
+   ========================================================= */
+.lcars-mkii-computer-core .panel-panel-5 > .lcars-panel-content{
+   position:relative
+}
+.lcars-mkii-computer-core .lcars-area-title{
+   position:absolute;
+   width:168px;
+   height:16px;
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   box-sizing:border-box;
+   margin:0;
+   padding:0 4px;
+   overflow:hidden;
+   pointer-events:none;
+   z-index:30;
+   color:#000;
+   font-family:"Archivo Narrow",Arial,sans-serif;
+   font-size:9px;
+   font-weight:700;
+   line-height:16px;
+   letter-spacing:.04em;
+   text-align:center;
+   text-transform:uppercase;
+   white-space:nowrap
+}
+.lcars-mkii-computer-core .lcars-area-title[data-area="2"]{left:40px;top:27px}
+.lcars-mkii-computer-core .lcars-area-title[data-area="3"]{left:40px;top:107px}
+.lcars-mkii-computer-core .lcars-area-title[data-area="4"]{left:40px;top:379px}
+.lcars-mkii-computer-core .lcars-area-title[data-area="5"]{left:40px;top:579px}
+
+</style>
+<main class="lcars-page" data-design-width="1400" data-max-width="1920" data-display-scale="1.328125"><div class="lcars-stage-shell" style="width:1360px;height:1030.625px;"><div class="lcars-stage" data-canvas-width="1024" data-canvas-height="776" style="width:1024px;height:776px;background:transparent;transform:scale(1.328125);"><section class="lcars-panel panel-panel-1" style="left:0px;top:0px;width:1024px;height:105px;background:transparent;box-sizing:border-box;overflow:hidden;border:0px solid #eb943a;border-radius:0px 0px 0px 0px"><div class="lcars-panel-content"></div></section><section class="lcars-panel panel-panel-2" style="left:0px;top:105px;width:144px;height:570px;background:#000000;box-sizing:border-box;overflow:hidden;border:0px solid #eb943a;border-radius:0px 0px 0px 0px"><div class="lcars-panel-content"><div class="lcars-menu-item" data-button="home" style="position:absolute;left:0px;top:63px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-home-label" data-button="home" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">HOME</span></div><a class="lcars-mkii-menu-hit" href="/" aria-label="HOME" data-lcars-mkii-menu="home" data-button="home" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="personnel" style="position:absolute;left:0px;top:103px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-personnel-label" data-button="personnel" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">PERSONNEL</span></div><a class="lcars-mkii-menu-hit" href="/characters" aria-label="PERSONNEL" data-lcars-mkii-menu="personnel" data-button="personnel" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="computer-core" style="position:absolute;left:0px;top:143px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-computer-core-label" data-button="computer-core" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">COMPUTER CORE</span></div><a class="lcars-mkii-menu-hit" href="/wikis/main-page" aria-label="COMPUTER CORE" data-lcars-mkii-menu="computer-core" data-button="computer-core" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="mission-logs" style="position:absolute;left:0px;top:183px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-mission-logs-label" data-button="mission-logs" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">MISSION LOGS</span></div><a class="lcars-mkii-menu-hit" href="/adventure-log" aria-label="MISSION LOGS" data-lcars-mkii-menu="mission-logs" data-button="mission-logs" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="resources" style="position:absolute;left:0px;top:223px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-resources-label" data-button="resources" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">RESOURCES</span></div><a class="lcars-mkii-menu-hit" href="/wikis/resources" aria-label="RESOURCES" data-lcars-mkii-menu="resources" data-button="resources" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="engineering" style="position:absolute;left:0px;top:263px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-engineering-label" data-button="engineering" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">ENGINEERING</span></div><a class="lcars-mkii-menu-hit" href="/wikis/engineering" aria-label="ENGINEERING" data-lcars-mkii-menu="engineering" data-button="engineering" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="exobiology" style="position:absolute;left:0px;top:303px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-exobiology-label" data-button="exobiology" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">EXOBIOLOGY</span></div><a class="lcars-mkii-menu-hit" href="/wikis/exobiology" aria-label="EXOBIOLOGY" data-lcars-mkii-menu="exobiology" data-button="exobiology" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="navigation" style="position:absolute;left:0px;top:343px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-navigation-label" data-button="navigation" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">NAVIGATION</span></div><a class="lcars-mkii-menu-hit" href="/maps" aria-label="NAVIGATION" data-lcars-mkii-menu="navigation" data-button="navigation" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="science" style="position:absolute;left:0px;top:383px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-science-label" data-button="science" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">SCIENCE</span></div><a class="lcars-mkii-menu-hit" href="/wikis/science" aria-label="SCIENCE" data-lcars-mkii-menu="science" data-button="science" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div><div class="lcars-menu-item" data-button="starships" style="position:absolute;left:0px;top:423px;width:128px;height:32px;z-index:20;"><div class="lcars-component-overlay" id="lcars-button-starships-label" data-button="starships" style="left:32px;top:0px;width:96px;height:32px;"><span style="position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;padding:0 8px;box-sizing:border-box;font-family:'Antonio',Arial,sans-serif;font-size:12px;font-weight:500;line-height:32px;letter-spacing:0.01em;text-transform:uppercase;color:#ffffff;white-space:pre-wrap;">STARSHIPS</span></div><a class="lcars-mkii-menu-hit" href="/wikis/starships" aria-label="STARSHIPS" data-lcars-mkii-menu="starships" data-button="starships" style="position:absolute;left:0px;top:0px;width:128px;height:32px;display:block;pointer-events:auto;"></a></div></div></section><section class="lcars-panel panel-panel-3" style="left:0px;top:675px;width:1024px;height:93px;background:#000000;box-sizing:border-box;overflow:hidden;border:0px solid #eb943a;border-radius:0px 0px 0px 0px"><div class="lcars-panel-content"></div></section><section class="lcars-panel panel-panel-4" style="left:144px;top:144px;width:568px;height:550px;background:#000000;box-sizing:border-box;overflow:hidden;border:0px solid #eb943a;border-radius:0px 0px 0px 0px"><div class="lcars-panel-content"><div id="lcars-mkii-area-1" class="lcars-mkii-content-anchor" data-lcars-mkii-area="lcars-mkii-area-1" aria-label="Main Content" style="position:absolute;left:16px;top:16px;width:536px;height:518px;overflow:auto;box-sizing:border-box;z-index:10;pointer-events:auto;"></div></div></section><section class="lcars-panel panel-panel-5" style="left:712px;top:105px;width:312px;height:671px;background:transparent;box-sizing:border-box;overflow:hidden;border:0px solid #eb943a;border-radius:0px 0px 0px 0px"><div class="lcars-panel-content"><div id="lcars-mkii-area-2" class="lcars-mkii-content-anchor" data-lcars-mkii-area="lcars-mkii-area-2" aria-label="GM Listing" style="position:absolute;left:32px;top:23px;width:184px;height:64px;overflow:hidden;box-sizing:border-box;z-index:10;pointer-events:auto;"></div><div id="lcars-mkii-area-3" class="lcars-mkii-content-anchor" data-lcars-mkii-area="lcars-mkii-area-3" aria-label="Personnel Data Files" style="position:absolute;left:48px;top:103px;width:152px;height:240px;overflow:hidden;box-sizing:border-box;z-index:10;pointer-events:auto;"></div><div id="lcars-mkii-area-4" class="lcars-mkii-content-anchor" data-lcars-mkii-area="lcars-mkii-area-4" aria-label="Subspace Analysis" style="position:absolute;left:48px;top:397px;width:184px;height:162px;overflow:hidden;box-sizing:border-box;z-index:10;pointer-events:auto;"></div><div id="lcars-mkii-area-5" class="lcars-mkii-content-anchor" data-lcars-mkii-area="lcars-mkii-area-5" aria-label="Fan Information" style="position:absolute;left:32px;top:575px;width:184px;height:80px;overflow:hidden;box-sizing:border-box;z-index:10;pointer-events:auto;"><span class="lcars-area5-label lcars-area5-population">POPULATION:</span><span class="lcars-area5-value lcars-area5-fan-count" id="lcars-area5-fan-count">0</span><span class="lcars-area5-label lcars-area5-status">STATUS FEED:</span><span class="lcars-area5-value lcars-area5-comment-count" id="lcars-area5-comment-count">0</span><a class="lcars-area5-button" id="lcars-area5-fan-button" href="#" aria-label="Become a Fan"><img id="lcars-area5-fan-button-image" alt="" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI0NSIgdmlld0JveD0iMCAwIDgwIDQ1Ij48cmVjdCBpZD0iYiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjQ1IiByeD0iOCIgcnk9IjgiIGZpbGw9IiM4ZjJhMmEiLz48cmVjdCBpZD0iYyIgd2lkdGg9IjgwIiBoZWlnaHQ9IjQ1IiByeD0iOCIgcnk9IjgiIGZpbGw9IiNkMDRmNGYiLz48cGF0aCBpZD0iZCIgZD0iTTI3LjgxNiwyMS43NjVsLS4wMDIsMS4zMDRjLS4xNCwxLjA5OS0uNjM5LDIuMDc1LTEuMzUyLDIuOTE1bC0uODA5LjgxOC0uMzM3LjI5NC0uNTQ3LjQwNS0uNjE2LjQwNC4yMDEsMS43MTMuMTM0LDEuMzM2Yy0uMTA4LjEyMS0uMzMxLjE2Mi0uNDYxLjA4MWwtMS4zODEtMi4zN2MtMS42NjguNzI0LTMuMzksMS4wNTktNS4xNzgsMS4yMTEtMS44MzkuMDc4LTMuNDk2LS4wMTEtNS4zMjUtLjQ1NmwtMi40ODIsMy4xMThjLS4wNjYuMDgzLS4yNy4wNjYtLjMzNi4wMTktLjA4Mi0uMDU5LS4xMTktLjE5LS4xMS0uMzEzbC4wNTgtLjc3MS4wMzktLjU0NC4yMzMtMi40MTFjLS43ODEtLjM2OC0xLjUzLS43NzItMi4xOTYtMS4zMjJsLS40MjQtLjM1Yy0uMjkxLS4yODUtLjU4NC0uNTQ5LS44NTEtLjg2My0xLjg2My0yLjE5Ni0xLjg2MS00Ljk0NiwwLTcuMTQzLjI1OS0uMzA2LjUzNS0uNTcxLjgzNC0uODM4LDEuNjcyLTEuNDk5LDMuOTE3LTIuMzU4LDYuMTAzLTIuNzg5Ljg5NC0xLjk3NywyLjA5Ny0zLjg0OCwzLjQ2Mi01LjQ5Ny4wNjUtLjA3OC4xOC0uMTUzLjI1Ny0uMTQ3LjA5MS4wMDcuMTgyLjA4OS4yNTIuMTgsMS4zNzcsMS43ODIsMi41NTEsMy42ODMsMy41NDUsNS42OTEsMi4zMTguNjAzLDQuNDE4LDEuNjUsNS45NzksMy40NDcuNjg2Ljg0NSwxLjE4LDEuODA2LDEuMzEsMi44NzhaTTkuMTk0LDI2LjI1M2wuNjA2LjMzOWMuNDk4LTMuMTg1LDEuMTY0LTYuMjQ1LDIuMzEtOS4yNzctMi4wMTkuNTkxLTQuMTk0LDEuNjg0LTUuMjEyLDMuNTY1LS42MDYsMS4xMDEtLjQ5NSwyLjM3LjE5OCwzLjQwNC41MTEuNzYzLDEuMzA1LDEuNTI0LDIuMDk5LDEuOTY4Wk0yNS43MzYsMjEuMDVjLS43NTMtMS42NjEtMi41MDMtMi43MzMtNC4yMzEtMy40MDcsMS4wNzcsMi42NjMsMS44NjQsNS40MjIsMi4zMzksOC4yOTgsMS42NTctMS4xMzYsMi43NTMtMi45OTIsMS44OTItNC44OTFaTTE1LjU3LDI4LjA2OWMuNTM2LjAzOCwxLjAyOS4wMjMsMS41NDEtLjAwNSwxLjU3Mi0uMDg3LDMuMDktLjM4Nyw0LjU3Ny0uOTU2bC0xLjgyNi0yLjc0N2MtLjE4Mi0uMjc0LS4zNjItLjQ5NS0uNjAxLS43MjQtLjE3OC0uMDQ2LS4zNTEtLjAzLS41MTQuMDU1bC0uNjU3LjM0NmMtMS4xMzIuNjg2LTIuMTcyLDEuNDY2LTMuMTEyLDIuMzk0bC0xLjQzMSwxLjQxMy45NTguMTQuNDk1LjA0NS41NjguMDRaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTMxLjgzNiwxOS43MVY3LjY3OWgyLjYwNGMuNjA2LDAsMS4wODkuMDkyLDEuNDQ5LjI3Ny4zNi4xODQuNjIxLjQ3Ni43ODIuODc1LjE2Mi4zOTguMjQzLjkyMS4yNDMsMS41Njh2LjM2OWMwLC42MjQtLjA4MSwxLjEzOS0uMjQzLDEuNTQxLS4xNjEuNDA0LS40MzIuNjg2LS44MS44NDUuMzE0LjEwNC41NjYuMjkzLjc1NS41NjMuMTg5LjI3MS4zMjUuNjAyLjQwNy45OTIuMDgyLjM4OS4xMjMuODE2LjEyMywxLjI4MXYuMzA4Yy0uMDA1LjgwMS0uMDk4LDEuNDU1LS4yOCwxLjk1OC0uMTgzLjUwNC0uNDY3Ljg3Mi0uODU0LDEuMTA0cy0uODk0LjM0OS0xLjUxOC4zNDloLTIuNjU5Wk0zMy42NjgsMTIuNTQ2aC42NzdjLjE1OSwwLC4yODktLjAyMi4zOS0uMDY4cy4xNzgtLjEyNC4yMzItLjIzNmMuMDU1LS4xMTEuMDkyLS4yNjguMTEzLS40NjguMDItLjIuMDMtLjQ1Ni4wMy0uNzY2di0uNzI1YzAtLjMyMy0uMDI5LS41NjktLjA4OS0uNzM4cy0uMTQ5LS4yODItLjI3LS4zNDJjLS4xMjEtLjA2LS4yNzctLjA4OS0uNDY5LS4wODloLS42MTV2My40MzJaTTMzLjY2OCwxOC4yODhoLjY0OWMuMjQxLDAsLjQzNS0uMDU0LjU3Ny0uMTYuMTQ1LS4xMDcuMjQ4LS4yODYuMzEyLS41MzdzLjA5Ni0uNTkzLjA5Ni0xLjAyNXYtLjk3YzAtLjU4My0uMDU2LTEuMDA4LS4xNjctMS4yNzUtLjExMi0uMjY2LS4zNDQtLjM5OS0uNjk0LS4zOTloLS43NzJ2NC4zNjhaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQwLjk0OSwxOS44MzNjLS41MTUsMC0uOTM4LS4wODItMS4yNjktLjI0Ni0uMzMtLjE2NC0uNTg4LS40MDEtLjc3MS0uNzExLS4xODYtLjMxLS4zMTMtLjY4My0uMzg3LTEuMTE3LS4wNzMtLjQzNi0uMTA5LS45MjItLjEwOS0xLjQ1OXYtMy44MjFjMC0uNDc5LjA0OS0uOTExLjE0Ni0xLjI5OS4wOTktLjM4OC4yNTEtLjcxOC40NTktLjk5MS4yMDctLjI3My40NzctLjQ4NC44MS0uNjMyLjMzMy0uMTQ4LjczMy0uMjIzLDEuMjAzLS4yMjMuNDc5LDAsLjg3Ny4wNzMsMS4xOTYuMjE5cy41Ny4zNTcuNzU2LjYzNmMuMTg0LjI3OC4zMTYuNjEyLjM5NiwxLjAwMS4wNzkuMzkxLjExOS44MzEuMTE5LDEuMzIzdjIuMTk0aC0zLjI2MXYyLjAxNmMwLC40OTcuMDM5Ljg5Ni4xMTYsMS4xOTZzLjI4OS40NTEuNjM2LjQ1MWMuMjMyLDAsLjM5Ny0uMDcuNDk1LS4yMTIuMDk5LS4xNDIuMTU4LS4zMzYuMTc4LS41ODUuMDIxLS4yNDguMDMxLS41MzEuMDMxLS44NTF2LS45MDJoMS43OTF2LjU0N2MwLC41NTEtLjAzMywxLjA0MS0uMSwxLjQ2OS0uMDY1LjQyOS0uMTg4Ljc5MS0uMzY5LDEuMDg3LS4xOC4yOTYtLjQzNi41MjEtLjc2OS42NzdzLS43NjYuMjMyLTEuMjk5LjIzMlpNNDAuMjMxLDEzLjY0N2gxLjQ2M3YtMS4zMTJjMC0uMzQyLS4wMTYtLjYzLS4wNDgtLjg2NC0uMDMyLS4yMzUtLjA5Ni0uNDEyLS4xOTEtLjUzcy0uMjQxLS4xNzgtLjQzOC0uMTc4Yy0uMjQxLDAtLjQxOC4wNy0uNTMuMjEyLS4xMTEuMTQyLS4xODIuMzM0LS4yMTEuNTc4LS4wMy4yNDMtLjA0NS41MjEtLjA0NS44M3YxLjI2NVoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDcuNDk4LDE5LjgzM2MtLjUyNCwwLS45NTctLjA4MS0xLjI5OS0uMjQyLS4zNDItLjE2Mi0uNjA5LS4zOTYtLjgwMy0uNzAxLS4xOTQtLjMwNi0uMzMtLjY3Ny0uNDA3LTEuMTE0cy0uMTE2LS45MzItLjExNi0xLjQ4M3YtMy4zMjJjMC0uNzU3LjA3LTEuNDA2LjIxMi0xLjk0OHMuNDAyLS45NTkuNzgyLTEuMjUxYy4zODEtLjI5Mi45MzItLjQzOCwxLjY1MS0uNDM4LjQ0MiwwLC44MTUuMDY4LDEuMTIxLjIwNXMuNTUyLjMzNC43MzguNTkyYy4xODcuMjU3LjMyMi41NjguNDA3LjkzMy4wODQuMzY0LjEyNi43NzQuMTI2LDEuMjN2MS4xMjhoLTEuNzV2LTEuMTg5YzAtLjI5Ni0uMDE0LS41NTEtLjA0MS0uNzYyLS4wMjctLjIxMy0uMDg5LS4zNzQtLjE4NS0uNDg2LS4wOTYtLjExMS0uMjQ4LS4xNjctLjQ1OC0uMTY3LS4yMDUsMC0uMzY0LjA1Ny0uNDc5LjE3MXMtLjE5Mi4yNzktLjIzNS40OTZjLS4wNDQuMjE2LS4wNjUuNDc1LS4wNjUuNzc1djQuNjIxYzAsLjMxLjAyLjU3NC4wNTguNzkzLjAzOS4yMTkuMTEyLjM4Ny4yMTkuNTAyLjEwNy4xMTcuMjY2LjE3NS40NzYuMTc1LjIwNSwwLC4zNTgtLjA2MS40NjItLjE4MS4xMDItLjEyMS4xNjktLjI5MS4yMDEtLjUxcy4wNDgtLjQ3Ny4wNDgtLjc3MnYtMS4yMTZoMS43NXYxLjAzOWMwLC40Ny0uMDQxLjg5Ni0uMTIzLDEuMjgyLS4wODIuMzg1LS4yMTcuNzE0LS40MDMuOTg3cy0uNDM2LjQ4NC0uNzQ1LjYzMmMtLjMxLjE0OC0uNjkuMjIzLTEuMTQyLjIyM1oiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNTMuODU1LDE5LjgzM2MtLjQ5MiwwLS45MDQtLjA3Ni0xLjIzNy0uMjI5LS4zMzMtLjE1My0uNTk2LS4zNzQtLjc5LS42NjQtLjE5My0uMjg5LS4zMzItLjY0My0uNDE2LTEuMDU5LS4wODUtLjQxOC0uMTI3LS44OTMtLjEyNy0xLjQyNXYtMy44MzVjMC0uNjQzLjA4My0xLjIxMS4yNS0xLjcwNi4xNjYtLjQ5NC40MzgtLjg4MS44MTYtMS4xNjIuMzc4LS4yNzkuODgtLjQyLDEuNTA0LS40Mi40NzQsMCwuODc0LjA4LDEuMTk5LjIzOS4zMjYuMTU5LjU4OC4zODYuNzg3LjY4MS4xOTcuMjkzLjM0My42NDEuNDM0LDEuMDQycy4xMzcuODQzLjEzNywxLjMyNnYzLjgzNWMwLC41MjQtLjA0Ljk5My0uMTE5LDEuNDA4LS4wOC40MTUtLjIxNy43Ny0uNDEsMS4wNjItLjE5NC4yOTUtLjQ1NS41MTktLjc4My42NzRzLS43NDMuMjMyLTEuMjQ0LjIzMlpNNTMuODU1LDE4LjM3Yy4yMDUsMCwuMzYtLjA2Mi40NjUtLjE4OC4xMDQtLjEyNi4xNzYtLjMuMjEyLS41MjNzLjA1NS0uNDguMDU1LS43NzJ2LTQuNTg2YzAtLjMxLS4wMjEtLjU3Ni0uMDYyLS44cy0uMTE0LS4zOTYtLjIxOS0uNTItLjI1NS0uMTg1LS40NTEtLjE4NWMtLjIwNSwwLS4zNjEuMDYyLS40NjkuMTg1LS4xMDYuMTIzLS4xOC4yOTYtLjIxOS41Mi0uMDM4LjIyNC0uMDU4LjQ5LS4wNTguOHY0LjU4NmMwLC4yOTIuMDIuNTQ5LjA1OC43NzIuMDM5LjIyNC4xMTIuMzk3LjIxOS41MjMuMTA3LjEyNS4yNjQuMTg4LjQ2OS4xODhaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTU4LjA1OSwxOS43MXYtMTAuMjUzaDEuODEydjEuMTE0Yy4xMDEtLjM2NC4yODMtLjY2Mi41NTEtLjg5Mi4yNjYtLjIzLjYzLS4zNDYsMS4wOS0uMzQ2LjM1MSwwLC42NTYuMDc3LjkxNi4yMzJzLjQ2LjQyMi42MDIuOGMuMTczLS4zMTkuNDAxLS41NzEuNjg0LS43NTUuMjgyLS4xODYuNjM2LS4yNzcsMS4wNi0uMjc3LjY2NSwwLDEuMTM3LjIyNCwxLjQxNS42N3MuNDE3LDEuMDY0LjQxNywxLjg1M3Y3Ljg1NGgtMS44MDV2LTcuODc1YzAtLjM2NC0uMDYyLS42MjUtLjE4NS0uNzgzLS4xMjMtLjE1Ni0uMjkyLS4yMzUtLjUwNi0uMjM1LS4yNzMsMC0uNDg2LjA5NS0uNjM5LjI4NC0uMTUzLjE4OC0uMjI5LjQ2Ni0uMjI5LjgzdjcuNzc5aC0xLjgxMnYtNy44ODhjMC0uMzA2LS4wNTEtLjU0OS0uMTU0LS43MzEtLjEwMi0uMTgzLS4yNzQtLjI3My0uNTE2LS4yNzMtLjMxNCwwLS41NDEuMTItLjY4LjM1OC0uMTQuMjQtLjIwOS41MjMtLjIwOS44NTJ2Ny42ODNoLTEuODEyWiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik03MC43MzMsMTkuODMzYy0uNTE1LDAtLjkzOC0uMDgyLTEuMjY5LS4yNDYtLjMzLS4xNjQtLjU4OC0uNDAxLS43NzEtLjcxMS0uMTg2LS4zMS0uMzEzLS42ODMtLjM4Ny0xLjExNy0uMDczLS40MzYtLjEwOS0uOTIyLS4xMDktMS40NTl2LTMuODIxYzAtLjQ3OS4wNDktLjkxMS4xNDYtMS4yOTkuMDk5LS4zODguMjUxLS43MTguNDU5LS45OTEuMjA3LS4yNzMuNDc3LS40ODQuODEtLjYzMi4zMzMtLjE0OC43MzMtLjIyMywxLjIwMy0uMjIzLjQ3OSwwLC44NzcuMDczLDEuMTk2LjIxOXMuNTcuMzU3Ljc1Ni42MzZjLjE4NC4yNzguMzE2LjYxMi4zOTYsMS4wMDEuMDc5LjM5MS4xMTkuODMxLjExOSwxLjMyM3YyLjE5NGgtMy4yNjF2Mi4wMTZjMCwuNDk3LjAzOS44OTYuMTE2LDEuMTk2cy4yODkuNDUxLjYzNi40NTFjLjIzMiwwLC4zOTctLjA3LjQ5NS0uMjEyLjA5OS0uMTQyLjE1OC0uMzM2LjE3OC0uNTg1LjAyMS0uMjQ4LjAzMS0uNTMxLjAzMS0uODUxdi0uOTAyaDEuNzkxdi41NDdjMCwuNTUxLS4wMzMsMS4wNDEtLjEsMS40NjktLjA2NS40MjktLjE4OC43OTEtLjM2OSwxLjA4Ny0uMTguMjk2LS40MzYuNTIxLS43NjkuNjc3cy0uNzY2LjIzMi0xLjI5OS4yMzJaTTcwLjAxNSwxMy42NDdoMS40NjN2LTEuMzEyYzAtLjM0Mi0uMDE2LS42My0uMDQ4LS44NjQtLjAzMi0uMjM1LS4wOTYtLjQxMi0uMTkxLS41M3MtLjI0MS0uMTc4LS40MzgtLjE3OGMtLjI0MSwwLS40MTguMDctLjUzLjIxMi0uMTExLjE0Mi0uMTgyLjMzNC0uMjExLjU3OC0uMDMuMjQzLS4wNDUuNTIxLS4wNDUuODN2MS4yNjVaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQxLjAxNywzNi42MTJjLS43MDIsMC0xLjE4OC0uMjU1LTEuNDU5LS43NjYtLjI3MS0uNTExLS40MTItMS4xODgtLjQyMS0yLjAzdi0uNjU2YzAtLjU0Ny4wNzktLjk5MS4yMzUtMS4zMzMuMTU4LS4zNDIuMzgyLS42Mi42NzQtLjgzNHMuNjQxLS40MDEsMS4wNDYtLjU2MS44NTYtLjMzLDEuMzU0LS41MTN2LS44OTZjMC0uMzQ3LS4wMTQtLjYyMy0uMDQxLS44MzEtLjAyNy0uMjA3LS4wODktLjM1OC0uMTg1LS40NTRzLS4yNDQtLjE0NC0uNDQ0LS4xNDRjLS4xOTYsMC0uMzQ1LjA0OS0uNDQ4LjE0Ni0uMTAyLjA5OS0uMTcyLjI0OS0uMjA4LjQ1MS0uMDM2LjIwMy0uMDU1LjQ2Mi0uMDU1Ljc3NnYuNDU4aC0xLjc5MXYtLjMwOGMwLS40Ny4wNC0uODg5LjEyLTEuMjU4LjA3OS0uMzY5LjIxNS0uNjgzLjQwNi0uOTQuMTkxLS4yNTcuNDUyLS40NTMuNzgzLS41ODguMzMtLjEzNC43NDYtLjIwMSwxLjI0Ny0uMjAxLjQ0MiwwLC44Mi4wNjIsMS4xMzUuMTg4LjMxNC4xMjYuNTY5LjMxMi43NjYuNTYxLjE5Ni4yNDkuMzQuNTYuNDMxLjkzNHMuMTM3LjgwOS4xMzcsMS4zMDZ2Ny4zOWgtMS44MjV2LTEuMDE5Yy0uMDU1LjE5Ni0uMTQ4LjM4LS4yOC41NS0uMTMyLjE3Mi0uMjk3LjMxLS40OTYuNDE0LS4xOTcuMTA0LS40MjUuMTU3LS42OC4xNTdaTTQxLjY0NiwzNS4yMTdjLjIyOCwwLC40MS0uMDgyLjU0Ny0uMjQ2cy4yMjEtLjMzLjI1My0uNDk5di0zLjUyN2MtLjI3My4xMjMtLjUwNC4yMzgtLjY5LjM0Ni0uMTg3LjEwNi0uMzM3LjIyNC0uNDUxLjM1MnMtLjE5Ni4yNzgtLjI0Ni40NTEtLjA3NS4zODUtLjA3NS42MzZ2MS4xNDhjMCwuNDcuMDQ5LjgxLjE0NywxLjAyMi4wOTguMjExLjI3LjMxNy41MTYuMzE3WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00OC40ODksMzYuNTA5di0xMi4wMzFoNC4xMjl2MS41OTNoLTIuMjk3djMuMTk5aDIuMTMzdjEuNmgtMi4xMzN2NS42NGgtMS44MzJaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTU1LjM1OSwzNi42MTJjLS43MDIsMC0xLjE4OC0uMjU1LTEuNDU5LS43NjYtLjI3MS0uNTExLS40MTItMS4xODgtLjQyMS0yLjAzdi0uNjU2YzAtLjU0Ny4wNzktLjk5MS4yMzUtMS4zMzMuMTU4LS4zNDIuMzgyLS42Mi42NzQtLjgzNHMuNjQxLS40MDEsMS4wNDYtLjU2MS44NTYtLjMzLDEuMzU0LS41MTN2LS44OTZjMC0uMzQ3LS4wMTQtLjYyMy0uMDQxLS44MzEtLjAyNy0uMjA3LS4wODktLjM1OC0uMTg1LS40NTRzLS4yNDQtLjE0NC0uNDQ0LS4xNDRjLS4xOTYsMC0uMzQ1LjA0OS0uNDQ4LjE0Ni0uMTAyLjA5OS0uMTcyLjI0OS0uMjA4LjQ1MS0uMDM2LjIwMy0uMDU1LjQ2Mi0uMDU1Ljc3NnYuNDU4aC0xLjc5MXYtLjMwOGMwLS40Ny4wNC0uODg5LjEyLTEuMjU4LjA3OS0uMzY5LjIxNS0uNjgzLjQwNi0uOTQuMTkxLS4yNTcuNDUyLS40NTMuNzgzLS41ODguMzMtLjEzNC43NDYtLjIwMSwxLjI0Ny0uMjAxLjQ0MiwwLC44Mi4wNjIsMS4xMzUuMTg4LjMxNC4xMjYuNTY5LjMxMi43NjYuNTYxLjE5Ni4yNDkuMzQuNTYuNDMxLjkzNHMuMTM3LjgwOS4xMzcsMS4zMDZ2Ny4zOWgtMS44MjV2LTEuMDE5Yy0uMDU1LjE5Ni0uMTQ4LjM4LS4yOC41NS0uMTMyLjE3Mi0uMjk3LjMxLS40OTYuNDE0LS4xOTcuMTA0LS40MjUuMTU3LS42OC4xNTdaTTU1Ljk4OCwzNS4yMTdjLjIyOCwwLC40MS0uMDgyLjU0Ny0uMjQ2cy4yMjEtLjMzLjI1My0uNDk5di0zLjUyN2MtLjI3My4xMjMtLjUwNC4yMzgtLjY5LjM0Ni0uMTg3LjEwNi0uMzM3LjIyNC0uNDUxLjM1MnMtLjE5Ni4yNzgtLjI0Ni40NTEtLjA3NS4zODUtLjA3NS42MzZ2MS4xNDhjMCwuNDcuMDQ5LjgxLjE0NywxLjAyMi4wOTguMjExLjI3LjMxNy41MTYuMzE3WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MC4zMTUsMzYuNTA5di0xMC4yNTRoMS44MTJ2MS4xNzZjLjA5MS0uMzUxLjI4Mi0uNjU1LjU3NC0uOTEyLjI5Mi0uMjU4LjY0OS0uMzg3LDEuMDczLS4zODcuNTkzLDAsMS4wMzcuMTk3LDEuMzMzLjU5Mi4yOTYuMzk0LjQ0NC45NjUuNDQ0LDEuNzEydjguMDczaC0xLjgxMnYtNy45NjRjMC0uMjk2LS4wNjctLjUyOC0uMjAxLS42OTctLjEzNS0uMTY5LS4zMTgtLjI1My0uNTUxLS4yNTMtLjE4NywwLS4zNDYuMDUxLS40NzUuMTU0LS4xMzEuMTAyLS4yMjguMjQzLS4yOTEuNDI0LS4wNjMuMTgtLjA5Ni4zOTEtLjA5Ni42MzJ2Ny43MDRoLTEuODEyWiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg=="></a><div id="lcars-area5-fan-source" class="lcars-area5-source"></div></div></div></section><svg id="a" xmlns="http://www.w3.org/2000/svg" width="1024" height="776" viewBox="0 0 1024 776" class="lcars-component-scene" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible"><?xml version="1.0" encoding="UTF-8"?><svg height="776" viewbox="0 0 1024 776" width="1024" xmlns="http://www.w3.org/2000/svg"><g id="a"><rect fill="#9d698a" height="16" id="area3-accent-16" width="16" x="728" y="328"/><path d="M32,168h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,168h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,208h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,208h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,248h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,248h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,288h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,288h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,328h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,328h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,368h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,368h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,408h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,408h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,448h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,448h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,488h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,488h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M32,528h88c4.415,0,8,3.585,8,8v16c0,4.415-3.585,8-8,8H32v-32h0Z" fill="#d04f4f"/><path d="M8,528h24v32H8c-4.415,0-8-3.585-8-8v-16c0-4.415,3.585-8,8-8Z" fill="#8e2a2a"/><path d="M384,112v16h-240.06c-8.83,0-15.99,7.16-15.99,16v16H0v-16c0-17.67,14.32-32,31.99-32h352.01Z" fill="#ec9438"/><path d="M728,151v16h16v-16h-16Z" fill="#ec9438"/><path d="M728,144c0-8.84-7.16-16-16-16h-240v-16h520c17.34,0,31.46,13.79,31.98,31h-95.98v1c0-8.84-7.16-16-16-16h-152c-4.42,0-8.42,1.79-11.32,4.68-2.89,2.9-4.68,6.9-4.68,11.32v-1h-16v1Z" fill="#ec9438"/><rect fill="#ec9438" height="16" width="96" x="928" y="151"/><path d="M928,175h96v65h-96v-16c0-4.42-1.79-8.42-4.68-11.32-2.9-2.89-6.9-4.68-11.32-4.68h-152c-8.84,0-16,7.16-16,16v96h-16v-145h16v1c0,4.42,1.79,8.42,4.68,11.32,2.9,2.89,6.9,4.68,11.32,4.68h152c8.84,0,16-7.16,16-16v-1Z" fill="#ec9438"/><path d="M1024,432v80h-96v-16c0-4.42-1.79-8.42-4.68-11.32-2.9-2.89-6.9-4.68-11.32-4.68h-152c-8.84,0-16,7.16-16,16v56h-16v-200h16v96c0,4.42,1.79,8.42,4.68,11.32,2.9,2.89,6.9,4.68,11.32,4.68h152c8.84,0,16-7.16,16-16v-16h96Z" fill="#ec9438"/><rect fill="#4b7ec0" height="16" id="area4-accent-16" width="16" x="728" y="560"/><rect fill="#4b7ec0" height="104" id="area4-accent-96" width="96" x="928" y="520"/><rect fill="#9d698a" height="176" id="area3-accent-96" width="96" x="928" y="248"/><path d="M408,760h8c4.415,0,8,3.585,8,8h0c0,4.415-3.585,8-8,8h-8v-16h0Z" fill="#ec9438"/><rect fill="#d14f4f" height="40" width="68" x="394" y="88"/><path d="M384,88v16H31.99c-17.67,0-31.99-14.33-31.99-32V0h128v56h-.05v16c0,8.84,7.16,16,15.99,16h240.06Z" fill="#c082a9"/><path d="M1024,0v72c0,17.67-14.32,32-31.99,32H472v-16h408.06c8.83,0,15.99-7.16,15.99-16v-16h-.05V0h128Z" fill="#c082a9"/><path d="M400,760v16H31.99c-17.67,0-31.99-14.33-31.99-32v-176h128v160h-.05v16c0,8.84,7.16,16,15.99,16h256.06Z" fill="#ec9438"/><path d="M448,776h-8c-4.415,0-8-3.585-8-8h0c0-4.415,3.585-8,8-8h8v16h0Z" fill="#ec9438"/><rect fill="#d04f4f" height="16" id="area5-accent-16" width="16" x="728" y="712"/><path d="M1024,632v72h-96v-8c0-4.42-1.79-8.42-4.68-11.32-2.9-2.89-6.9-4.68-11.32-4.68h-152c-4.42,0-8.42,1.79-11.32,4.68-2.89,2.9-4.68,6.9-4.68,11.32v8h-16v-120h16v64c0,4.42,1.79,8.42,4.68,11.32,2.9,2.89,6.9,4.68,11.32,4.68h152c8.84,0,16-7.16,16-16v-16h96Z" fill="#ec9438"/><rect fill="#ec9438" height="16" width="96" x="928" y="712"/><path d="M928,736h96v8c0,17.67-14.33,32-32,32H456v-16h256c4.42,0,8.42-1.79,11.32-4.68,2.89-2.9,4.68-6.9,4.68-11.32v-8h16v8c0,4.42,1.79,8.42,4.68,11.32,2.9,2.89,6.9,4.68,11.32,4.68h152c8.84,0,16-7.16,16-16v-8Z" fill="#ec9438"/><rect fill="#d04f4f" height="16" id="area5-accent-96" width="96" x="928" y="712"/><rect fill="#fdba33" height="16" id="area2-accent-16" width="16" x="728" y="151"/><rect fill="#fdba33" height="16" id="area2-accent-96" width="96" x="928" y="151"/><path d="M1024,143v1c0-.33-.01-.67-.02-1h.02Z" fill="#fdba33"/><path d="M873.516,740.871v-6.875h1.488c.347,0,.622.053.828.158s.354.272.447.5.139.526.139.896v.211c0,.356-.046.65-.139.881s-.247.392-.463.482c.18.06.323.167.432.322s.186.344.232.566.07.467.07.732v.176c-.003.458-.056.831-.16,1.119s-.267.498-.488.631-.511.199-.867.199h-1.52ZM874.562,736.777h.387c.091,0,.165-.013.223-.039s.102-.071.133-.135.053-.153.064-.268.018-.261.018-.438v-.414c0-.185-.017-.325-.051-.422s-.085-.161-.154-.195-.158-.051-.268-.051h-.352v1.961ZM874.562,740.059h.371c.138,0,.248-.03.33-.092s.142-.163.178-.307.055-.339.055-.586v-.555c0-.333-.032-.576-.096-.729s-.196-.229-.396-.229h-.441v2.496Z" fill="#fff"/><path d="M878.723,740.941c-.294,0-.536-.047-.725-.141s-.336-.229-.441-.406-.179-.39-.221-.639-.062-.526-.062-.834v-2.184c0-.273.028-.521.084-.742s.144-.41.262-.566.272-.276.463-.361.419-.127.688-.127c.273,0,.501.042.684.125s.326.204.432.363.181.35.227.572.068.475.068.756v1.254h-1.863v1.152c0,.284.022.512.066.684s.165.258.363.258c.133,0,.228-.04.283-.121s.09-.192.102-.334.018-.304.018-.486v-.516h1.023v.312c0,.315-.019.595-.057.84s-.108.452-.211.621-.249.298-.439.387-.438.133-.742.133ZM878.312,737.406h.836v-.75c0-.195-.009-.36-.027-.494s-.055-.235-.109-.303-.138-.102-.25-.102c-.138,0-.239.04-.303.121s-.104.19-.121.33-.025.298-.025.475v.723Z" fill="#fff"/><path d="M882.465,740.941c-.3,0-.547-.046-.742-.139s-.349-.226-.459-.4-.188-.387-.232-.637-.066-.532-.066-.848v-1.898c0-.433.04-.804.121-1.113s.229-.548.447-.715.532-.25.943-.25c.253,0,.466.039.641.117s.315.19.422.338.185.325.232.533.072.442.072.703v.645h-1v-.68c0-.169-.008-.314-.023-.436s-.051-.214-.105-.277-.142-.096-.262-.096c-.117,0-.208.032-.273.098s-.11.159-.135.283-.037.271-.037.443v2.641c0,.177.011.328.033.453s.063.221.125.287.151.1.271.1c.117,0,.205-.034.264-.104s.097-.166.115-.291.027-.272.027-.441v-.695h1v.594c0,.269-.023.513-.07.732s-.124.408-.23.564-.249.276-.426.361-.395.127-.652.127Z" fill="#fff"/><path d="M886.098,740.941c-.281,0-.517-.044-.707-.131s-.341-.214-.451-.379-.19-.367-.238-.605-.072-.51-.072-.814v-2.191c0-.367.048-.692.143-.975s.251-.504.467-.664.503-.24.859-.24c.271,0,.499.046.686.137s.336.221.449.389.196.366.248.596.078.481.078.758v2.191c0,.3-.022.567-.068.805s-.124.439-.234.607-.26.296-.447.385-.425.133-.711.133ZM886.098,740.105c.117,0,.206-.036.266-.107s.101-.171.121-.299.031-.274.031-.441v-2.621c0-.177-.012-.329-.035-.457s-.065-.227-.125-.297-.146-.105-.258-.105c-.117,0-.206.035-.268.105s-.103.169-.125.297-.033.28-.033.457v2.621c0,.167.011.313.033.441s.063.228.125.299.15.107.268.107Z" fill="#fff"/><path d="M888.5,740.871v-5.859h1.035v.637c.058-.208.162-.378.314-.51s.36-.197.623-.197c.2,0,.375.044.523.133s.263.241.344.457c.099-.183.229-.326.391-.432s.363-.158.605-.158c.38,0,.649.128.809.383s.238.608.238,1.059v4.488h-1.031v-4.5c0-.208-.035-.357-.105-.447s-.167-.135-.289-.135c-.156,0-.278.054-.365.162s-.131.267-.131.475v4.445h-1.035v-4.508c0-.175-.029-.313-.088-.418s-.157-.156-.295-.156c-.18,0-.31.068-.389.205s-.119.299-.119.486v4.391h-1.035Z" fill="#fff"/><path d="M895.742,740.941c-.294,0-.536-.047-.725-.141s-.336-.229-.441-.406-.179-.39-.221-.639-.062-.526-.062-.834v-2.184c0-.273.028-.521.084-.742s.144-.41.262-.566.272-.276.463-.361.419-.127.688-.127c.273,0,.501.042.684.125s.326.204.432.363.181.35.227.572.068.475.068.756v1.254h-1.863v1.152c0,.284.022.512.066.684s.165.258.363.258c.133,0,.228-.04.283-.121s.09-.192.102-.334.018-.304.018-.486v-.516h1.023v.312c0,.315-.019.595-.057.84s-.108.452-.211.621-.249.298-.439.387-.438.133-.742.133ZM895.332,737.406h.836v-.75c0-.195-.009-.36-.027-.494s-.055-.235-.109-.303-.138-.102-.25-.102c-.138,0-.239.04-.303.121s-.104.19-.121.33-.025.298-.025.475v.723Z" fill="#fff"/><path d="M900.457,740.93c-.401,0-.679-.146-.834-.438s-.235-.679-.24-1.16v-.375c0-.312.045-.566.135-.762s.218-.354.385-.477.366-.229.598-.32.489-.188.773-.293v-.512c0-.198-.008-.356-.023-.475s-.051-.205-.105-.26-.14-.082-.254-.082c-.112,0-.197.028-.256.084s-.099.142-.119.258-.031.264-.031.443v.262h-1.023v-.176c0-.269.022-.508.068-.719s.123-.39.232-.537.259-.259.447-.336.427-.115.713-.115c.253,0,.469.036.648.107s.325.179.438.32.194.319.246.533.078.462.078.746v4.223h-1.043v-.582c-.031.112-.085.217-.16.314s-.17.177-.283.236-.243.09-.389.09ZM900.816,740.133c.13,0,.234-.047.312-.141s.126-.188.145-.285v-2.016c-.156.07-.288.136-.395.197s-.192.128-.258.201-.112.159-.141.258-.043.22-.043.363v.656c0,.269.028.463.084.584s.154.182.295.182Z" fill="#fff"/><path d="M904.727,740.871v-6.875h2.359v.91h-1.312v1.828h1.219v.914h-1.219v3.223h-1.047Z" fill="#fff"/><path d="M908.652,740.93c-.401,0-.679-.146-.834-.438s-.235-.679-.24-1.16v-.375c0-.312.045-.566.135-.762s.218-.354.385-.477.366-.229.598-.32.489-.188.773-.293v-.512c0-.198-.008-.356-.023-.475s-.051-.205-.105-.26-.14-.082-.254-.082c-.112,0-.197.028-.256.084s-.099.142-.119.258-.031.264-.031.443v.262h-1.023v-.176c0-.269.022-.508.068-.719s.123-.39.232-.537.259-.259.447-.336.427-.115.713-.115c.253,0,.469.036.648.107s.325.179.438.32.194.319.246.533.078.462.078.746v4.223h-1.043v-.582c-.031.112-.085.217-.16.314s-.17.177-.283.236-.243.09-.389.09ZM909.012,740.133c.13,0,.234-.047.312-.141s.126-.188.145-.285v-2.016c-.156.07-.288.136-.395.197s-.192.128-.258.201-.112.159-.141.258-.043.22-.043.363v.656c0,.269.028.463.084.584s.154.182.295.182Z" fill="#fff"/><path d="M911.484,740.871v-5.859h1.035v.672c.052-.2.161-.374.328-.521s.371-.221.613-.221c.339,0,.593.112.762.338s.254.552.254.979v4.613h-1.035v-4.551c0-.169-.038-.302-.115-.398s-.182-.145-.314-.145c-.106,0-.197.029-.271.088s-.13.14-.166.242-.055.224-.055.361v4.402h-1.035Z" fill="#fff"/><path d="M870.701,737.827v.676c-.074.57-.333,1.076-.702,1.512l-.42.424-.175.153-.284.21-.319.21.104.889.07.693c-.056.063-.172.084-.239.042l-.716-1.229c-.865.376-1.758.549-2.686.628-.954.04-1.813-.006-2.762-.237l-1.287,1.617c-.034.043-.14.034-.174.01-.043-.031-.062-.098-.057-.162l.03-.4.02-.282.121-1.251c-.405-.191-.794-.4-1.139-.686l-.22-.182c-.151-.148-.303-.285-.441-.447-.966-1.139-.965-2.565,0-3.705.135-.159.277-.296.432-.435.867-.777,2.031-1.223,3.165-1.446.463-1.025,1.088-1.996,1.796-2.851.033-.04.093-.079.133-.076.047.003.094.046.131.093.714.924,1.323,1.91,1.839,2.951,1.202.313,2.291.856,3.101,1.788.356.438.612.937.679,1.492ZM861.043,740.155l.314.176c.258-1.652.604-3.239,1.198-4.811-1.047.306-2.175.874-2.703,1.849-.314.571-.257,1.229.103,1.766.265.396.677.79,1.088,1.021ZM869.622,737.457c-.39-.861-1.298-1.417-2.194-1.767.559,1.381.967,2.812,1.213,4.303.86-.589,1.428-1.552.981-2.536ZM864.35,741.097c.278.02.534.012.799-.003.815-.045,1.602-.201,2.374-.496l-.947-1.425c-.094-.142-.188-.257-.311-.376-.092-.024-.182-.016-.266.029l-.341.179c-.587.356-1.126.76-1.614,1.242l-.742.733.497.073.257.023.295.021Z" fill="#fff"/><path d="M760,684h152c4.418,0,8,3.582,8,8h0c0,4.418-3.582,8-8,8h-152c-4.418,0-8-3.582-8-8h0c0-4.418,3.582-8,8-8Z" fill="#d14f50" id="area5-title-pill"/><path d="M760,484h152c4.418,0,8,3.582,8,8h0c0,4.418-3.582,8-8,8h-152c-4.418,0-8-3.582-8-8h0c0-4.418,3.582-8,8-8Z" fill="#4b7ec0" id="area4-title-pill"/><path d="M760,212h152c4.418,0,8,3.582,8,8h0c0,4.418-3.582,8-8,8h-152c-4.418,0-8-3.582-8-8h0c0-4.418,3.582-8,8-8Z" fill="#9d698a" id="area3-title-pill"/><path d="M760,132h152c4.418,0,8,3.582,8,8h0c0,4.418-3.582,8-8,8h-152c-4.418,0-8-3.582-8-8h0c0-4.418,3.582-8,8-8Z" fill="#fdba33" id="area2-title-pill"/></g><g id="b"><g id="c"><path d="M5.774,214v20h20v-20H5.774ZM23.834,228.428c0,1.325-.71,2.484-1.771,3.118v-2.222c0-2.313-1.875-4.187-4.187-4.187h-4.207c-2.312,0-4.187,1.874-4.187,4.187v2.222c-1.06-.634-1.771-1.793-1.771-3.118v-8.854c0-2.007,1.628-3.634,3.634-3.634h8.854c2.007,0,3.634,1.626,3.634,3.634,0,0,0,8.854,0,8.854Z" fill="#fff"/><circle cx="15.774" cy="220.782" fill="#fff" r="4.227"/></g><g id="d"><path d="M25.774,182.437l-1.291.478-.477,1.289-.392-1.056c-.923.72-1.965,1.354-3.025,1.94l-.202-.451c.974-.533,2.047-1.159,2.857-1.827-.022-.009-.954-.354-1.005-.374l1.289-.477.478-1.291c.131.356.348.94.477,1.291.199.072,1.076.397,1.291.477Z" fill="#fff"/><path d="M16.496,186.311c-.554.197-1.116.375-1.68.536.188-.153.455-.372.688-.563.038-.031.072-.06.108-.088.034-.027.067-.054.099-.081.031-.025.061-.051.088-.072.085-.069.15-.121.184-.15.15.123.327.267.513.419Z" fill="#fff"/><path d="M17.106,186.087v-.002c-.097-.339-.204-.704-.26-.895l1.395-1.137h-1.724l-.534-5.271-.532,5.271h-1.724l1.395,1.137c-.004.013-.038.134-.09.309l-.04.139c-.022.076-.045.155-.069.238l-.049.168c-.096.332-.195.675-.247.856-1.415.388-2.861.652-4.323.742l1.931-5.117c-4.249,2.065-6.986,5.143-1.931,5.117l-.282.823c-7.614.605-3.881-3.948,2.469-6.617,0-.009,3.034-8.034,3.034-8.041.119-.321.574-.321.693,0,1.058,2.751,3.121,8.112,4.168,10.832-1.063.532-2.159,1.023-3.282,1.449h0Z" fill="#fff"/><path d="M17.346,188.024l-9.041,6.363c-.213.15-.493-.067-.397-.318l2.119-5.612c.332-.027,1.502-.204,1.881-.289,1.906-.406,3.35-.816,5.063-1.469.146.119.287.233.408.332l-.088-.305-.038-.134c.536-.209,1.103-.444,1.72-.709l1.617-.794c3.348,9.597,6.843,13.599-3.244,2.935Z" fill="#fff"/><polygon fill="#fff" points="14.59 187.031 14.631 186.888 14.837 186.829 14.59 187.031"/><polygon fill="#fff" points="16.491 186.305 17.105 186.081 17.253 186.59 16.971 186.697 16.491 186.305"/></g><g id="e"><path d="M10.209,261.692c2.588.959,5.995,1.049,8.712.621,1.304-.206,3.092-.671,4.039-1.554.252-.235.511-.545.513-.902l.014-2.375c.002-.306-.107-.567-.295-.805-1.062-1.335-4.156-1.876-5.86-1.99l-.611-.041h-1.895l-.611.039c-1.72.116-4.774.652-5.859,1.994-.191.238-.293.497-.293.804v2.23c0,.989,1.263,1.653,2.147,1.98h0Z" fill="#fff"/><circle cx="9.269" cy="258.986" fill="#fff" r=".384"/><circle cx="9.269" cy="260.15" fill="#fff" r=".384"/><path d="M21.195,263.094c-.793.271-1.575.461-2.412.586-2.685.4-5.855.298-8.436-.586-.911-.351-1.956-.817-2.283-1.747v3.812c0,.591.657,1.148,1.182,1.445,1.165.662,2.716,1.008,4.059,1.168,2.399.288,5.193.18,7.507-.535,1.001-.31,2.678-1.032,2.675-2.152l-.007-3.739c-.33.931-1.369,1.394-2.283,1.747h0Z" fill="#fff"/><circle cx="9.269" cy="265.137" fill="#fff" r=".384"/><circle cx="9.269" cy="264.082" fill="#fff" r=".384"/><path d="M23.477,266.761c-.109.293-.24.519-.451.722-.858.821-2.416,1.291-3.611,1.514-2.409.451-4.876.448-7.287,0-.814-.15-1.563-.378-2.315-.688-.746-.353-1.488-.763-1.749-1.548l-.002,3.735c-.002.713.637,1.233,1.245,1.57,1.953,1.083,5.174,1.381,7.401,1.265,1.197-.061,2.358-.199,3.517-.499,1.151-.3,3.262-1.033,3.26-2.336l-.009-3.735h0Z" fill="#fff"/><circle cx="9.269" cy="270.541" fill="#fff" r=".384"/><circle cx="9.269" cy="269.487" fill="#fff" r=".384"/></g><path d="M16.729,297.529v12.941c0,.809.407,1.522,1.028,1.946v-6.449c0-1.949,1.581-3.529,3.529-3.529.974,0,1.856.396,2.496,1.034.638.64,1.034,1.522,1.034,2.496v6.856h.959v1.176H5.774v-1.176h6.693c1.299,0,2.353-1.053,2.353-2.353v-12.941c0-1.3-1.054-2.353-2.353-2.353h-6.693v-1.176h20v1.176h-6.693c-1.3,0-2.353,1.053-2.353,2.353h0Z" fill="#fff"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="302.457"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="302.457"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="303.428"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="303.428"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="304.4"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="304.4"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="305.372"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="305.372"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="306.344"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="306.344"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="307.316"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="307.316"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="308.288"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="308.288"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="309.259"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="309.259"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="310.231"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="310.231"/><rect fill="#fff" height=".598" width="3.67" x="10.348" y="311.203"/><rect fill="#fff" height=".598" width="3.67" x="6.02" y="311.203"/><rect fill="#fff" height="1.029" width="6.611" x="6.02" y="300.673"/><path d="M12.991,300.673h.513c.284,0,.515.231.515.515h0c0,.284-.231.515-.515.515h-.513v-1.029h0Z" fill="#fff"/><path d="M6.379,299.943v-3.664h.526v3.187h.672v.477h-1.198Z" fill="#fff"/><path d="M7.761,296.824c0-.124.024-.225.072-.304.041-.082.096-.146.164-.191.066-.043.14-.076.223-.098.081-.017.162-.025.243-.025.175-.003.335.038.481.123.068.045.122.109.164.191.041.079.062.18.062.304v2.574c0,.117-.021.215-.062.294-.041.082-.096.145-.164.189-.066.045-.14.078-.223.098-.084.025-.17.038-.258.038-.081,0-.162-.012-.243-.038-.083-.02-.157-.053-.223-.098-.154-.089-.232-.25-.235-.482v-2.574h0ZM8.288,299.35c0,.09.017.151.05.181.028.035.071.051.13.048.058.003.103-.012.135-.048.026-.03.04-.09.04-.181v-2.481c0-.089-.013-.15-.04-.184-.032-.029-.077-.043-.135-.043s-.101.014-.13.043c-.034.034-.05.095-.05.184v2.481Z" fill="#fff"/><path d="M10.911,298.116v1.827h-.27l-.015-.231h-.01c-.106.203-.269.304-.488.304-.064,0-.131-.012-.198-.038-.071-.02-.139-.053-.203-.098-.06-.044-.112-.106-.156-.189-.045-.079-.067-.177-.067-.294v-2.574c0-.124.024-.225.072-.304.041-.082.096-.146.164-.191.066-.044.14-.076.223-.098.081-.017.162-.025.243-.025.175-.003.335.038.481.123.068.045.122.109.164.191.041.079.062.18.062.304v.777h-.527v-.731c0-.089-.013-.15-.04-.184-.032-.029-.077-.043-.135-.043s-.101.014-.129.043c-.034.034-.05.095-.05.184v2.481c0,.09.017.151.05.181.028.035.071.051.129.048.058.003.103-.012.135-.048.026-.03.04-.09.04-.181v-.797h-.227v-.437h.754,0Z" fill="#fff"/><circle cx="21.286" cy="298.909" fill="#fff" r="2.794"/><rect fill="#fff" height="18.824" width=".294" x="15.627" y="454.588"/><rect fill="#fff" height="18.824" width=".294" x="11.77" y="454.588"/><rect fill="#fff" height="18.824" width=".294" x="19.484" y="454.588"/><rect fill="#fff" height="18.824" width=".294" x="23.341" y="454.588"/><rect fill="#fff" height="18.824" width=".294" x="7.914" y="454.588"/><rect fill="#fff" height=".294" width="18.824" x="6.362" y="463.853"/><rect fill="#fff" height=".294" width="18.824" x="6.362" y="459.996"/><rect fill="#fff" height=".294" width="18.824" x="6.362" y="456.139"/><rect fill="#fff" height=".294" width="18.824" x="6.362" y="471.566"/><rect fill="#fff" height=".294" width="18.824" x="6.362" y="467.71"/><path d="M8.993,457.747h.002v3.396h-.002c0,.336.198.611.441.611v.305h-.882c-.182,0-.403-.104-.577-.269-.176-.165-.306-.395-.306-.647v-3.396c.006-.538.54-.919.882-.919h.882v.308c-.243,0-.441.272-.441.611Z" fill="#fff"/><path d="M13.737,457.747h-.002v3.396h.002c0,.336-.198.611-.441.611v.305h.882c.182,0,.403-.104.577-.269.176-.165.306-.395.306-.647v-3.396c-.006-.538-.54-.919-.882-.919h-.882v.308c.243,0,.441.272.441.611Z" fill="#fff"/><path d="M19.631,463.437c1.503,0,2.721,1.218,2.721,2.721s-1.218,2.721-2.721,2.721-2.721-1.218-2.721-2.721,1.218-2.721,2.721-2.721h0ZM19.631,462.554c-1.987,0-3.603,1.616-3.603,3.603s1.616,3.603,3.603,3.603,3.603-1.616,3.603-3.603-1.616-3.603-3.603-3.603h0Z" fill="#fff"/><rect fill="#fff" height=".882" width="10.294" x="6.362" y="465.716"/><rect fill="#fff" height=".882" width="2.457" x="22.728" y="465.716"/><rect fill="#fff" height="8.353" width=".882" x="19.19" y="454.588"/><rect fill="#fff" height="4.237" width=".882" x="19.19" y="469.174"/><circle cx="11.365" cy="459.443" fill="#fff" r="1.594"/><circle cx="12.271" cy="346.6" fill="#fff" r="5.985"/><path d="M19.278,335.413c-2.827,0-5.195,1.961-5.822,4.596,3.134.56,5.513,3.297,5.513,6.591,0,.261-.017.519-.046.772.117.007.235.011.355.011,3.306,0,5.985-2.68,5.985-5.985s-2.68-5.985-5.985-5.985Z" fill="#fff"/><path d="M20.341,502.678c.315.05.633.074.952.074,1.161.031,2.285-.406,3.12-1.213l.464-.464c.31-.31.31-.813,0-1.123s-.813-.31-1.123,0l-.113.113-3.931-3.935.113-.109c.31-.31.31-.813,0-1.123-.31-.31-.813-.31-1.123,0h0l-.464.464c-.81.833-1.248,1.959-1.213,3.12.01,1.094.297,2.167.835,3.12.399.716.616,1.52.632,2.34.01.569-.142,1.128-.437,1.615l-3.838-3.834c.251-.161.528-.278.819-.343l3.042,3.042c.024-.151.036-.304.035-.456-.001-.357-.049-.712-.14-1.057l-1.587-1.587c.347.046.688.129,1.018.246-.287-.567-.497-1.171-.624-1.794-.321-.047-.646-.067-.971-.062-2.292-.095-4.227,1.687-4.321,3.979-.005.114-.005.228,0,.343.01,1.094.297,2.167.835,3.12.399.716.616,1.52.632,2.34.01.569-.142,1.128-.437,1.615l-3.857-3.857c.252-.161.531-.278.823-.343l3.038,3.038c.024-.15.036-.301.035-.453-.001-.357-.049-.712-.14-1.057l-1.584-1.584c.345.045.685.126,1.014.242-.289-.567-.5-1.171-.628-1.794-.314-.05-.63-.074-.948-.074-1.161-.035-2.287.403-3.12,1.213l-.476.488c-.31.31-.31.813,0,1.123.31.31.813.31,1.123,0l.113-.113,3.931,3.931-.113.113c-.31.31-.31.813,0,1.123s.813.31,1.123,0l.464-.464c.81-.833,1.248-1.959,1.213-3.12-.01-1.094-.297-2.167-.835-3.12-.399-.716-.616-1.52-.632-2.34-.01-.57.141-1.131.437-1.619l3.857,3.857c-.251.161-.528.278-.819.343l-3.042-3.042c-.024.151-.036.304-.035.456.001.356.048.71.14,1.053l1.587,1.591c-.347-.048-.688-.13-1.018-.246.287.567.497,1.171.624,1.794.315.05.633.074.952.074,2.292.095,4.228-1.685,4.323-3.977.005-.125.005-.25-.001-.375-.01-1.094-.297-2.167-.835-3.12-.399-.716-.616-1.52-.632-2.34-.01-.569.142-1.128.437-1.615l3.857,3.857c-.253.16-.531.276-.823.343l-3.042-3.042c-.021.151-.032.304-.031.456.001.357.049.712.14,1.057l1.584,1.584c-.346-.044-.686-.127-1.014-.246.29.561.503,1.157.636,1.775h0Z" fill="#fff"/><path d="M25.773,384.764v-1.528l-1.51-.179c-.146-.729-.14-.704-.285-1.434l1.326-.744c-.349-.841-.237-.569-.585-1.41l-1.463.412c-.413-.619-.399-.597-.812-1.216l.94-1.194c-.643-.644-.435-.437-1.079-1.079l-1.194.94c-.619-.413-.597-.399-1.216-.812l.412-1.465c-.841-.347-.571-.235-1.41-.584l-.744,1.326c-.731-.146-.704-.141-1.434-.285l-.181-1.51h-1.526l-.179,1.51c-.731.144-.704.14-1.434.285l-.744-1.326c-.841.349-.571.237-1.41.584l.41,1.465c-.618.413-.596.399-1.215.812l-1.194-.94c-.644.643-.437.435-1.081,1.079l.941,1.194c-.413.619-.4.597-.813,1.216l-1.463-.412c-.349.841-.235.569-.584,1.41l1.325.744c-.144.729-.14.704-.285,1.434l-1.509.179v1.528l1.509.179c.146.729.141.704.285,1.434l-1.325.744c.349.841.235.569.584,1.41l1.463-.412c.413.619.4.597.813,1.216l-.941,1.194c.644.644.437.437,1.081,1.079l1.194-.94c.619.413.597.399,1.215.812l-.41,1.465c.84.347.569.235,1.41.584l.744-1.326c.729.146.703.141,1.434.285l.179,1.51h1.526l.181-1.51c.729-.144.703-.14,1.434-.285l.744,1.326c.84-.349.569-.237,1.41-.584l-.412-1.465c.619-.413.597-.399,1.216-.812l1.194.94c.644-.643.437-.435,1.079-1.079l-.94-1.194c.413-.619.399-.597.812-1.216l1.463.412c.349-.841.237-.569.585-1.41l-1.326-.744c.146-.729.14-.704.285-1.434l1.51-.179h0ZM15.773,390.48c-3.579,0-6.481-2.901-6.481-6.481s2.901-6.479,6.481-6.479,6.481,2.901,6.481,6.479-2.901,6.481-6.481,6.481Z" fill="#fff"/><path d="M14.595,386.883l-.131,1.817-1.825.13-.192-.192.861-.861c.252-.252.208-.703-.097-1.009l-.205-.205c-.306-.306-.757-.349-1.009-.098l-.861.861-.192-.192.13-1.825,1.817-.131-.003-.003,4.066-4.066.129-1.81,1.825-.13.192.192-.861.861c-.252.252-.208.703.098,1.009l.205.205c.306.306.757.349,1.009.097l.861-.861.192.192-.13,1.825-1.81.129-4.066,4.066-.003-.003h0Z" fill="#fff"/><path d="M23.185,420.307c-.09-.822-.375-1.55-.894-2.195-1.042-1.296-2.441-2.362-4.059-2.836-.469-.137-1.407-.208-1.407-.208,0,0-1.698,2.611-1.698,5.832,0,2.307.871,4.301,1.366,5.247v1.216c-.756-1.534-.635-2.812-2.759-4.909-2.306-2.278-4.713-3.593-5.377-2.938-.663.655.669,3.032,2.975,5.31,2.206,2.179,3.578,1.868,5.16,2.803v5.302h.333s.55-.075.826-.224c1.568-.85,3.044-2.795,4.001-4.287.353-.55.684-1.067.999-1.633.326-.586.53-1.182.601-1.86.164-1.547.144-3.081-.068-4.62h0ZM16.069,427.118c-.071.071-.188.071-.259,0l-.996-.984h-.984c-.037,0-.07-.015-.095-.039-.024-.024-.039-.057-.039-.094,0-.073.06-.133.134-.133h.716l-.69-.682h-.984c-.037,0-.071-.015-.095-.039-.025-.024-.039-.057-.039-.093,0-.073.06-.133.134-.133h.716l-.726-.717h-.985c-.037,0-.07-.015-.095-.039-.025-.024-.039-.057-.039-.094,0-.073.06-.133.134-.133h.716l-.422-.417-.015-.015-.185-.182h-.985c-.037,0-.07-.015-.095-.039-.025-.024-.039-.057-.039-.094,0-.073.06-.132.134-.132h.717l-.559-.552h-.985c-.037,0-.07-.015-.095-.039-.024-.024-.039-.057-.039-.094,0-.073.06-.133.134-.133h.716l-.622-.614h-.984c-.037,0-.07-.015-.094-.039-.025-.024-.039-.057-.039-.093,0-.074.06-.133.134-.133h.716l-1.16-1.146c-.036-.035-.054-.082-.054-.128s.018-.093.054-.128c.072-.071.188-.071.259,0l1.16,1.146v-.708c0-.037.015-.07.039-.094.025-.024.058-.039.095-.039.074,0,.134.059.134.133v.972l.621.613v-.707c0-.037.015-.07.039-.094.024-.024.058-.039.095-.039.074,0,.134.059.134.133v.971l.559.552v-.707c0-.036.015-.07.039-.094.025-.024.058-.039.095-.039.074,0,.134.059.134.133v.971l.185.183.015.015.422.417v-.707c0-.036.015-.07.039-.094.024-.024.058-.039.095-.039.074,0,.134.059.134.133v.971l.726.717v-.707c0-.037.015-.07.039-.094.025-.024.058-.039.095-.039.074,0,.134.059.134.133v.972l.69.682v-.707c0-.036.015-.07.039-.093.025-.024.058-.039.095-.039.074,0,.134.059.134.132v.972l.996.984c.072.071.072.185,0,.256h0ZM17.515,418.516c.026-.026.061-.039.095-.039s.068.013.095.039c.052.051.052.136,0,.187l-.696.687v.769l.506-.5c.026-.026.061-.038.095-.038s.068.013.095.038c.052.052.052.136,0,.188l-.696.687v.869l.506-.5c.026-.026.061-.038.095-.038s.068.013.095.038c.052.052.052.136,0,.188l-.696.687v1.015l.506-.5c.026-.026.061-.039.095-.039s.068.013.095.039c.052.052.052.136,0,.188l-.696.687v.964l.506-.5c.026-.026.061-.039.095-.039s.068.013.095.039c.052.051.052.136,0,.187l-.696.687v1.391c0,.1-.082.181-.184.181s-.183-.081-.183-.181v-1.391l-.696-.687c-.026-.026-.039-.059-.039-.094,0-.034.013-.067.039-.093.053-.052.137-.052.19,0l.506.5v-.964l-.696-.687c-.026-.026-.039-.06-.039-.094s.013-.068.039-.094c.053-.051.137-.051.19,0l.506.5v-1.015l-.696-.687c-.026-.026-.039-.06-.039-.094s.013-.067.039-.094c.053-.051.137-.051.19,0l.506.5v-.869l-.696-.687c-.026-.026-.039-.06-.039-.094s.013-.067.039-.094c.053-.051.137-.051.19,0l.506.5v-.769l-.696-.687c-.026-.026-.039-.059-.039-.094,0-.034.013-.067.039-.093.053-.052.137-.052.19,0l.506.5v-.88l-.696-.687c-.026-.026-.039-.059-.039-.093,0-.034.013-.068.039-.094.053-.052.137-.052.19,0l.506.5v-1.62c0-.05.02-.095.054-.129.033-.033.079-.053.13-.053.101,0,.184.081.184.181v1.62l.506-.5c.026-.026.061-.039.095-.039s.068.013.095.039c.052.051.052.136,0,.187l-.696.687v.88l.506-.5h0ZM21.722,426.493c-.367.562-.844,1.011-1.354,1.446-.62.528-1.315.912-2.131,1.128-.09.024-.254-.013-.302-.051-.056-.044-.12-.168-.116-.259.034-.733.27-1.4.67-2.008.37-.563.789-1.058,1.293-1.508.547-.489,1.189-.834,1.919-.97.153-.028.349.02.447.113.366.35-.08,1.58-.425,2.109Z" fill="#fff"/><path d="M13.443,547.27c-.295.203-.652.133-.864-.097-.227-.245-.246-.623-.02-.876l1.209-1.512-2.977.5-3.038,3.037c-.188.188-.482.146-.652-.007s-.229-.467-.05-.657l1.175-1.243.887-.923,1.429-1.5,1.553-1.626.817-.849.347-.376c.233-.253.585-.311.857-.089.243.198.295.579.072.838l-1.967,1.969,2.272.029,1.432-1.775c-1.004-1.761-.745-3.952.606-5.432,1.696-1.859,4.557-2.027,6.449-.408,2.186,1.87,2.177,5.262-.084,7.126-1.471,1.212-3.54,1.399-5.214.46l-1.805,1.455.029,2.266,1.97-1.966c.251-.251.67-.182.865.063.231.292.143.628-.115.874l-2.998,2.85-.889.851-.669.633-.85.814-1.076,1.019c-.196.186-.51.148-.679-.039-.157-.174-.183-.474.012-.669l2.992-2.991.498-2.973-1.524,1.226h0Z" fill="#fff"/></g></svg>
+<div class="lcars-number-overlay-layer">
+   <div class="lcars-number-overlay" style="left:928px;top:248px;width:96px;height:176px;">6215-083
+8472-619
+7184-250
+1701-069
+4827-316
+7159-204
+8912-543
+1548-729
+5392-553</div>
+   <div class="lcars-number-overlay" style="left:928px;top:520px;width:96px;height:104px;">6370-185
+5703-962
+2185-634
+7631-450
+8817-925</div>
+   <div class="lcars-number-overlay" style="left:0px;top:568px;width:128px;height:112px;justify-content:flex-end;">8454-272
+1138-306
+2366-357
+8522-082</div>
+</div></div></div></main>
