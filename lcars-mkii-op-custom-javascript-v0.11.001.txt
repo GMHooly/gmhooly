@@ -1,0 +1,779 @@
+/* LCARS Mk II - OP CUSTOM JAVASCRIPT - v0.11.001
+   Home baseline: supplied v0.10.135 implementation
+   Main page: Assembly 1.10b adapter */
+
+(function(){'use strict';
+
+/* =========================================================
+LCARS Mk II - OP BRIDGE
+v0.10.135 - External Shell CSS Architecture
+========================================================= */
+
+var VERSION='0.10.130';
+var SHELL_URL='https://cdn.jsdelivr.net/gh/GMHooly/gmhooly@main/lcars-mkii-shell-v0.10.135.html';
+var area5DefaultButtonSrc='';
+
+/* =========================================================
+AREA 1 - PAGE SHELL
+========================================================= */
+
+var SOURCES={
+main:'.campaign-landing-page-container',
+gamemaster:'#sidebar .sidebar-party-members .game-master',
+stats:'#campaign-quick-stats',
+stream:'#sidebar .campaign-stream-module.module'
+};
+
+function isHomePage(){
+return document.body && document.body.classList.contains('campaign-landing-show');
+}
+
+function addShell(html){
+var existing=document.getElementById('lcars-mkii-op-shell-host');
+if(existing) return existing;
+
+var host=document.createElement('div');
+host.id='lcars-mkii-op-shell-host';
+host.innerHTML=html;
+
+var banner=document.querySelector('#banner-container');
+if(banner){
+banner.insertAdjacentElement('afterend',host);
+host.style.marginTop='-'+(banner.offsetHeight||0)+'px';
+}else{
+var target=document.querySelector('#content')||document.querySelector('#wrapper')||document.body;
+target.insertBefore(host,target.firstChild);
+}
+return host;
+}
+
+function moveElement(selector,targetId){
+var source=document.querySelector(selector);
+var target=document.getElementById(targetId);
+if(!source||!target||source===target||source.contains(target)||target.contains(source)) return false;
+
+source.setAttribute('data-lcars-mkii-adapted','true');
+target.appendChild(source);
+return true;
+}
+
+/* =========================================================
+AREA 2 - GAMEMASTER
+========================================================= */
+
+function buildGameMaster(){
+var area=document.getElementById('lcars-mkii-area-2');
+var original=area && area.querySelector('.game-master');
+if(!area||!original||area.querySelector('.lcars-gm-card')) return false;
+
+var sourceImage=original.querySelector('img');
+var card=document.createElement('div');
+card.className='lcars-gm-card';
+
+if(sourceImage){
+var portrait=sourceImage.cloneNode(true);
+portrait.className='lcars-gm-portrait';
+card.appendChild(portrait);
+}
+
+var name=document.createElement('a');
+name.className='lcars-gm-name';
+name.href='https://www.obsidianportal.com/profile/GM_HOOLY';
+name.textContent='GM_HOOLY';
+name.setAttribute('aria-label','GM_HOOLY profile');
+card.appendChild(name);
+
+area.insertBefore(card,original);
+original.style.display='none';
+original.setAttribute('aria-hidden','true');
+return true;
+}
+
+/* =========================================================
+AREA 3 - PERSONNEL
+========================================================= */
+
+/* Personnel behaviour lives in personnel-widget.js. */
+
+/* =========================================================
+AREA 4 - ASSEMBLY / CONTEXT
+========================================================= */
+
+function movePageContent(){
+return moveElement(SOURCES.main,'lcars-mkii-area-1');
+}
+
+function moveGameMaster(){
+return moveElement(SOURCES.gamemaster,'lcars-mkii-area-2');
+}
+
+function moveStats(){
+return moveElement(SOURCES.stats,'lcars-mkii-area-4');
+}
+
+function moveCampaignStream(){
+var source=document.querySelector(SOURCES.stream);
+var target=document.getElementById('lcars-mkii-area-4');
+if(!source||!target) return false;
+if(source.parentNode!==target) target.appendChild(source);
+source.classList.add('lcars-mkii-op-stream');
+return true;
+}
+
+function startCampaignStreamAutoScroll(){
+var stream=document.querySelector('#lcars-mkii-area-4 .campaign-stream-module');
+if(!stream||stream.getAttribute('data-lcars-auto-scroll')==='true') return false;
+
+stream.setAttribute('data-lcars-auto-scroll','true');
+
+var list=stream.querySelector('ul,ol');
+if(!list) return false;
+
+if(list.getAttribute('data-lcars-scroll-copy')!=='true'){
+var copy=list.cloneNode(true);
+copy.setAttribute('data-lcars-scroll-copy','true');
+copy.setAttribute('aria-hidden','true');
+stream.appendChild(copy);
+}
+
+var position=0;
+var loopHeight=0;
+var copy=stream.querySelector('[data-lcars-scroll-copy="true"]');
+var timer=setInterval(function(){
+if(!document.body||!document.body.contains(stream)){
+clearInterval(timer);
+return;
+}
+
+if(!copy||!document.body.contains(copy)){
+copy=stream.querySelector('[data-lcars-scroll-copy="true"]');
+}
+
+if(!copy) return;
+
+loopHeight=copy.getBoundingClientRect().top-list.getBoundingClientRect().top;
+if(loopHeight<=0) return;
+
+position+=0.35;
+
+if(position>=loopHeight){
+position-=loopHeight;
+}
+
+stream.scrollTop=position;
+},40);
+
+return true;
+}
+
+function findFanModule(){
+var selectors=['#sidebar .campaign-fans.module','#sidebar .sidebar-fans.module','#sidebar .fans.module','#sidebar [class*="fan"][class*="module"]'];
+var source=null;
+for(var i=0;i<selectors.length;i++){
+source=document.querySelector(selectors[i]);
+if(source) return source;
+}
+var modules=document.querySelectorAll('#sidebar .module');
+for(var j=0;j<modules.length;j++){
+var txt=(modules[j].textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+var cls=((modules[j].className||'')+' '+(modules[j].id||'')).toLowerCase();
+if(cls.indexOf('fan')>-1||txt.indexOf('become a fan')>-1||txt.indexOf('you are a fan')>-1){
+return modules[j];
+}
+}
+return null;
+}
+
+function extractNumberNearLabel(text,label){
+var safe=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+var m=text.match(new RegExp(safe+'\\s*[:\\-]?\\s*([0-9][0-9,]*)','i'));
+if(m) return m[1].replace(/,/g,'');
+m=text.match(new RegExp('([0-9][0-9,]*)\\s*'+safe,'i'));
+if(m) return m[1].replace(/,/g,'');
+return null;
+}
+
+function extractFanCount(source){
+if(!source) return '0';
+var text=(source.textContent||'').replace(/\s+/g,' ').trim();
+var value=extractNumberNearLabel(text,'fans');
+if(value!==null) return value;
+var nodes=source.querySelectorAll('[data-count],[data-fans],[data-fan-count]');
+for(var i=0;i<nodes.length;i++){
+var raw=nodes[i].getAttribute('data-count')||nodes[i].getAttribute('data-fans')||nodes[i].getAttribute('data-fan-count');
+if(raw&&/^[0-9][0-9,]*$/.test(raw)) return raw.replace(/,/g,'');
+}
+return '0';
+}
+
+function findFanAction(source){
+if(!source) return null;
+var nodes=source.querySelectorAll('a,button,input[type=button],input[type=submit]');
+for(var i=0;i<nodes.length;i++){
+var txt=(nodes[i].textContent||nodes[i].value||'').replace(/\s+/g,' ').trim().toLowerCase();
+var href=(nodes[i].getAttribute('href')||'').toLowerCase();
+var cls=(nodes[i].className||'').toString().toLowerCase();
+var title=(nodes[i].getAttribute('title')||'').toLowerCase();
+var aria=(nodes[i].getAttribute('aria-label')||'').toLowerCase();
+if(txt.indexOf('become a fan')>-1||txt.indexOf('you are a fan')>-1||txt.indexOf('unfan')>-1||href.indexOf('fan')>-1||cls.indexOf('fan')>-1||title.indexOf('fan')>-1||aria.indexOf('fan')>-1){
+return nodes[i];
+}
+}
+return null;
+}
+
+function triggerFanAction(){
+var source=findFanModule();
+var action=findFanAction(source);
+if(!action) return false;
+try{
+action.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));
+}catch(e){
+try{action.click();}catch(ignore){}
+}
+return true;
+}
+
+function isFan(source,action){
+var text=((source&&source.textContent)||'').replace(/\s+/g,' ').trim().toLowerCase();
+if(text.indexOf('you are a fan')>-1||text.indexOf('unfan')>-1) return true;
+if(action){
+var actionText=(action.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+if(actionText.indexOf('you are a fan')>-1||actionText.indexOf('unfan')>-1) return true;
+}
+return false;
+}
+
+function countStatusFeed(){
+var stream=document.querySelector('#lcars-mkii-area-4 .campaign-stream-module');
+if(!stream) return '0';
+var text=(stream.textContent||'').replace(/\s+/g,' ').trim();
+var value=extractNumberNearLabel(text,'comments');
+if(value!==null) return value;
+var comments=stream.querySelectorAll('.comment,[class*="comment"]');
+if(comments.length) return String(comments.length);
+var entries=stream.querySelectorAll('li');
+return String(entries.length);
+}
+
+function installArea5ButtonAnimation(){
+if(document.getElementById('lcars-area5-button-animation')) return;
+var style=document.createElement('style');
+style.id='lcars-area5-button-animation';
+style.textContent="\n#lcars-mkii-area-5 .lcars-area5-info-button{position:relative;overflow:hidden}\n#lcars-mkii-area-5 .lcars-area5-info-button::before{content:\"\";position:absolute;left:-34px;top:0;width:28px;height:100%;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.30),transparent);transform:skewX(-18deg);animation:lcars-area5-info-sweep 4.8s ease-in-out infinite}\n#lcars-mkii-area-5 .lcars-area5-info-label,#lcars-mkii-area-5 .lcars-area5-info-triangle{position:relative;z-index:1}\n#lcars-mkii-area-5 .lcars-area5-info-triangle{animation:lcars-area5-info-triangle 4.8s ease-in-out infinite}\n#lcars-mkii-area-5 #lcars-area5-status-button::before,#lcars-mkii-area-5 #lcars-area5-status-button .lcars-area5-info-triangle{animation-delay:2.4s}\n@keyframes lcars-area5-info-sweep{0%,18%{transform:translateX(0) skewX(-18deg);opacity:0}22%{opacity:1}48%{transform:translateX(135px) skewX(-18deg);opacity:1}54%,100%{transform:translateX(135px) skewX(-18deg);opacity:0}}\n@keyframes lcars-area5-info-triangle{0%,50%{filter:brightness(1);transform:scale(1)}54%{filter:brightness(1.65);transform:scale(1.12)}60%,100%{filter:brightness(1);transform:scale(1)}}\n@media (prefers-reduced-motion:reduce){#lcars-mkii-area-5 .lcars-area5-info-button::before,#lcars-mkii-area-5 .lcars-area5-info-triangle{animation:none}}\n";
+document.head.appendChild(style);
+}
+
+function buildArea5(){
+var area=document.getElementById('lcars-mkii-area-5');
+if(!area||area.getAttribute('data-lcars-area5-built')==='true') return false;
+
+var source=findFanModule();
+var action=findFanAction(source);
+var count=document.querySelector('#lcars-area5-fan-count');
+var comments=document.querySelector('#lcars-area5-comment-count');
+var button=document.querySelector('#lcars-area5-fan-button');
+var image=document.querySelector('#lcars-area5-fan-button-image');
+if(!count||!comments||!button||!image) return false;
+
+count.textContent=extractFanCount(source);
+comments.textContent=countStatusFeed();
+var popButton=document.getElementById('lcars-area5-population-button');
+var statusButton=document.getElementById('lcars-area5-status-button');
+if(popButton){popButton.querySelector('.lcars-area5-info-label').textContent='POPULATION: '+count.textContent;popButton.setAttribute('aria-label','POPULATION: '+count.textContent);}
+if(statusButton){statusButton.querySelector('.lcars-area5-info-label').textContent='STATUS FEED: '+comments.textContent;statusButton.setAttribute('aria-label','STATUS FEED: '+comments.textContent);}
+
+function makeArea5InfoButton(id,label,value,top,action){
+var old=document.getElementById(id);
+if(old) old.remove();
+var b=document.createElement('a');
+b.id=id;
+b.href='#';
+b.innerHTML='<span class="lcars-area5-info-label"></span><span class="lcars-area5-info-triangle" aria-hidden="true"></span>';b.querySelector('.lcars-area5-info-label').textContent=label+' '+value;
+b.setAttribute('aria-label',label+' '+value);
+b.setAttribute('role','button');
+b.style.position='absolute';
+b.style.left='8px';
+b.style.top=top+'px';
+b.style.width='83px';
+b.style.height='21px';
+b.style.margin='0';
+b.style.padding='0 5px';
+b.style.border='0';
+b.style.borderRadius='6px';
+b.style.background='#f79a69';
+b.style.color='#000';
+b.style.fontFamily='Antonio,Arial,sans-serif';
+b.style.fontSize='10px';
+b.style.fontWeight='600';
+b.style.lineHeight='21px';
+b.style.textAlign='left';
+b.style.display='flex';
+b.style.alignItems='center';
+b.style.justifyContent='space-between';
+b.style.boxSizing='border-box';
+b.style.whiteSpace='nowrap';
+b.style.overflow='hidden';
+b.style.cursor='pointer';
+b.style.zIndex='9999';
+b.style.pointerEvents='auto';
+var txt=b.querySelector('.lcars-area5-info-label');
+txt.style.display='block';
+txt.style.flex='1';
+txt.style.minWidth='0';
+var tri=b.querySelector('.lcars-area5-info-triangle');
+tri.style.display='block';
+tri.style.width='0';
+tri.style.height='0';
+tri.style.borderTop='7px solid transparent';
+tri.style.borderBottom='7px solid transparent';
+tri.style.borderLeft='10px solid #c94f53';
+tri.style.marginRight='2px';
+tri.style.flex='0 0 auto';
+b.onclick=function(event){
+event.preventDefault();
+event.stopPropagation();
+action();
+return false;
+};
+area.appendChild(b);
+return b;
+}
+
+count.style.display='none';
+comments.style.display='none';
+var popLabel=document.querySelector('#lcars-mkii-area-5 .lcars-area5-population');
+var statusLabel=document.querySelector('#lcars-mkii-area-5 .lcars-area5-status');
+if(popLabel) popLabel.style.display='none';
+if(statusLabel) statusLabel.style.display='none';
+var popButton=makeArea5InfoButton('lcars-area5-population-button','POPULATION:',count.textContent,28,function(){
+if(window.jQuery) window.jQuery('#campaign-fans-modal').foundation('reveal','open');
+});
+var statusButton=makeArea5InfoButton('lcars-area5-status-button','STATUS FEED:',comments.textContent,52,function(){
+if(window.jQuery) window.jQuery('#campaign-comments-modal').foundation('reveal','open');
+});
+popButton.classList.add('lcars-area5-info-button');
+statusButton.classList.add('lcars-area5-info-button');
+installArea5ButtonAnimation();
+
+if(!window.lcarsArea5InfoClickBound){
+document.addEventListener('click',function(event){
+var pop=document.getElementById('lcars-area5-population-button');
+var status=document.getElementById('lcars-area5-status-button');
+var x=event.clientX,y=event.clientY;
+if(pop){
+var pr=pop.getBoundingClientRect();
+if(x>=pr.left&&x<=pr.right&&y>=pr.top&&y<=pr.bottom){
+event.preventDefault();
+event.stopPropagation();
+if(window.jQuery) window.jQuery('#campaign-fans-modal').foundation('reveal','open');
+return;
+}
+}
+if(status){
+var sr=status.getBoundingClientRect();
+if(x>=sr.left&&x<=sr.right&&y>=sr.top&&y<=sr.bottom){
+event.preventDefault();
+event.stopPropagation();
+if(window.jQuery) window.jQuery('#campaign-comments-modal').foundation('reveal','open');
+}
+}
+},true);
+window.lcarsArea5InfoClickBound=true;
+}
+
+var fan=isFan(source,action);
+if(!area5DefaultButtonSrc) area5DefaultButtonSrc=image.src;
+var yaafSrc='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI0NSIgdmlld0JveD0iMCAwIDgwIDQ1Ij48cmVjdCBpZD0iYiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjQ1IiByeD0iOCIgcnk9IjgiIGZpbGw9IiM4ZjJhMmEiLz48cGF0aCBpZD0iYyIgZD0iTTI3LjgxNiwyMS43NjVsLS4wMDIsMS4zMDRjLS4xNCwxLjA5OS0uNjM5LDIuMDc1LTEuMzUyLDIuOTE1bC0uODA5LjgxOC0uMzM3LjI5NC0uNTQ3LjQwNS0uNjE2LjQwNC4yMDEsMS43MTMuMTM0LDEuMzM2Yy0uMTA4LjEyMS0uMzMxLjE2Mi0uNDYxLjA4MWwtMS4zODEtMi4zN2MtMS42NjguNzI0LTMuMzksMS4wNTktNS4xNzgsMS4yMTEtMS44MzkuMDc4LTMuNDk2LS4wMTEtNS4zMjUtLjQ1NmwtMi40ODIsMy4xMThjLS4wNjYuMDgzLS4yNy4wNjYtLjMzNi4wMTktLjA4Mi0uMDU5LS4xMTktLjE5LS4xMS0uMzEzbC4wNTgtLjc3MS4wMzktLjU0NC4yMzMtMi40MTFjLS43ODEtLjM2OC0xLjUzLS43NzItMi4xOTYtMS4zMjJsLS40MjQtLjM1Yy0uMjkxLS4yODUtLjU4NC0uNTQ5LS44NTEtLjg2My0xLjg2My0yLjE5Ni0xLjg2MS00Ljk0NiwwLTcuMTQzLjI1OS0uMzA2LjUzNS0uNTcxLjgzNC0uODM4LDEuNjcyLTEuNDk5LDMuOTE3LTIuMzU4LDYuMTAzLTIuNzg5Ljg5NC0xLjk3NywyLjA5Ny0zLjg0OCwzLjQ2Mi01LjQ5Ny4wNjUtLjA3OC4xOC0uMTUzLjI1Ny0uMTQ3LjA5MS4wMDcuMTgyLjA4OS4yNTIuMTgsMS4zNzcsMS43ODIsMi41NTEsMy42ODMsMy41NDUsNS42OTEsMi4zMTguNjAzLDQuNDE4LDEuNjUsNS45NzksMy40NDcuNjg2Ljg0NSwxLjE4LDEuODA2LDEuMzEsMi44NzhaTTkuMTk0LDI2LjI1M2wuNjA2LjMzOWMuNDk4LTMuMTg1LDEuMTY0LTYuMjQ1LDIuMzEtOS4yNzctMi4wMTkuNTkxLTQuMTk0LDEuNjg0LTUuMjEyLDMuNTY1LS42MDYsMS4xMDEtLjQ5NSwyLjM3LjE5OCwzLjQwNC41MTEuNzYzLDEuMzA1LDEuNTI0LDIuMDk5LDEuOTY4Wk0yNS43MzYsMjEuMDVjLS43NTMtMS42NjEtMi41MDMtMi43MzMtNC4yMzEtMy40MDcsMS4wNzcsMi42NjMsMS44NjQsNS40MjIsMi4zMzksOC4yOTgsMS42NTctMS4xMzYsMi43NTMtMi45OTIsMS44OTItNC44OTFaTTE1LjU3LDI4LjA2OWMuNTM2LjAzOCwxLjAyOS4wMjMsMS41NDEtLjAwNSwxLjU3Mi0uMDg3LDMuMDktLjM4Nyw0LjU3Ny0uOTU2bC0xLjgyNi0yLjc0N2MtLjE4Mi0uMjc0LS4zNjItLjQ5NS0uNjAxLS43MjQtLjE3OC0uMDQ2LS4zNTEtLjAzLS41MTQuMDU1bC0uNjU3LjM0NmMtMS4xMzIuNjg2LTIuMTcyLDEuNDY2LTMuMTEyLDIuMzk0bC0xLjQzMSwxLjQxMy45NTguMTQuNDk1LjA0NS41NjguMDRaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM0LjQxLDE5Ljc3NHYtNC44MDVsLTIuMDE3LTcuMjI2aDEuNzVsMS4xODksNC40OThoLjAyN2wxLjA2LTQuNDk4aDEuNzQzbC0xLjkyMSw3LjIyNnY0LjgwNWgtMS44MzJaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQxLjI1OSwxOS44OTdjLS40OTIsMC0uOTA0LS4wNzYtMS4yMzctLjIyOS0uMzMzLS4xNTMtLjU5Ni0uMzc0LS43OS0uNjY0LS4xOTMtLjI4OS0uMzMyLS42NDMtLjQxNi0xLjA1OS0uMDg1LS40MTgtLjEyNy0uODkzLS4xMjctMS40MjZ2LTMuODM0YzAtLjY0My4wODMtMS4yMTEuMjUtMS43MDYuMTY2LS40OTQuNDM4LS44ODEuODE2LTEuMTYyLjM3OC0uMjc5Ljg4LS40MiwxLjUwNC0uNDIuNDc0LDAsLjg3NC4wOCwxLjE5OS4yMzkuMzI2LjE1OS41ODguMzg2Ljc4Ny42ODEuMTk3LjI5My4zNDMuNjQxLjQzNCwxLjA0MnMuMTM3Ljg0My4xMzcsMS4zMjZ2My44MzRjMCwuNTI0LS4wNC45OTMtLjExOSwxLjQwOC0uMDguNDE1LS4yMTcuNzctLjQxLDEuMDYyLS4xOTQuMjk1LS40NTUuNTE5LS43ODMuNjc0cy0uNzQzLjIzMi0xLjI0NC4yMzJaTTQxLjI1OSwxOC40MzRjLjIwNSwwLC4zNi0uMDYyLjQ2NS0uMTg4LjEwNC0uMTI2LjE3Ni0uMy4yMTItLjUyM3MuMDU1LS40OC4wNTUtLjc3MnYtNC41ODZjMC0uMzEtLjAyMS0uNTc2LS4wNjItLjhzLS4xMTQtLjM5Ni0uMjE5LS41Mi0uMjU1LS4xODUtLjQ1MS0uMTg1Yy0uMjA1LDAtLjM2MS4wNjItLjQ2OS4xODUtLjEwNi4xMjMtLjE4LjI5Ni0uMjE5LjUyLS4wMzguMjI0LS4wNTguNDktLjA1OC44djQuNTg2YzAsLjI5Mi4wMi41NDkuMDU4Ljc3Mi4wMzkuMjI0LjExMi4zOTcuMjE5LjUyMy4xMDcuMTI1LjI2NC4xODguNDY5LjE4OFoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDcuMjI3LDE5LjkwNGMtLjQwNSwwLS43NDQtLjA5MS0xLjAxNS0uMjczLS4yNzEtLjE4My0uNDc1LS40NTQtLjYwOS0uODE3LS4xMzQtLjM2MS0uMjAxLS44MTYtLjIwMS0xLjM2M3YtNy45MjloMS44MTh2Ny42NDljMCwuMzkyLjA0OC42OTcuMTQ0LjkxNnMuMjk2LjMyOC42MDIuMzI4Yy4zMTksMCwuNTM2LS4xMjQuNjUzLS4zNzIuMTE1LS4yNDkuMTc0LS41MzUuMTc0LS44NThsLjAwNy03LjY2M2gxLjgwNXYxMC4yNTNoLTEuODEydi0xLjA2NmMtLjEyOC4zNDctLjMxMi42MzMtLjU1NC44NTctLjI0MS4yMjctLjU3OS4zMzktMS4wMTIuMzM5WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik01NC4xNzIsMTkuNzc0bDEuNzE2LTEyLjAzMWgyLjQybDEuODI1LDEyLjAzMWgtMS43MDlsLS4yODctMi4xNDZoLTEuOTQxbC0uMjYsMi4xNDZoLTEuNzY0Wk01Ni4zNzMsMTYuMTU4aDEuNTcybC0uODA3LTYuMDQzaC0uMDI3bC0uNzM4LDYuMDQzWiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MS4yMiwxOS43NzRWNy43NDNoMy4wMjhjLjYyOSwwLDEuMDk5LjEyMywxLjQwOC4zNjlzLjUxNC42MDYuNjEyLDEuMDhjLjA5OC40NzQuMTQ2LDEuMDUzLjE0NiwxLjczNiwwLC43MDYtLjA3MiwxLjI2Mi0uMjE1LDEuNjY0LS4xNDUuNDA0LS40MzcuNjc0LS44NzkuODExLjIxLjAzNi4zODUuMTIyLjUyNi4yNTYuMTQyLjEzNS4yNTUuMzMxLjM0Mi41ODguMDg3LjI1OC4xNDkuNTg4LjE4OC45OTIuMDM4LjQwMi4wNTguODk2LjA1OCwxLjQ3OXYuMzgzYzAsLjIxLDAsLjQ1Ny4wMDMuNzQxLjAwMy4yODUuMDA2LjU2OS4wMTEuODUycy4wMTIuNTI0LjAyMS43MjUuMDIxLjMxOS4wMzQuMzU1aC0xLjgzMmMtLjAxNC0uMDIyLS4wMjQtLjE0MS0uMDMtLjM1Mi0uMDA4LS4yMTMtLjAxNC0uNDgyLS4wMjEtLjgxMS0uMDA2LS4zMjgtLjAxMS0uNjgyLS4wMTQtMS4wNi0uMDAyLS4zNzgtLjAwMy0uNzUxLS4wMDMtMS4xMTh2LS45NzRjMC0uMzYtLjAyNi0uNjMyLS4wNzktLjgxNy0uMDUyLS4xODQtLjE0Ny0uMzEyLS4yODctLjM4Ni0uMTM5LS4wNzMtLjMzOC0uMTE2LS41OTgtLjEzbC0uNTg4LS4wMzR2NS42OGgtMS44MzJaTTYzLjA1OSwxMi42NzJoLjczMWMuMjI0LDAsLjM5My0uMDUuNTEtLjE1LjExNS0uMTAxLjE5NS0uMjg1LjIzOC0uNTU0LjA0NC0uMjY5LjA2NS0uNjU2LjA2NS0xLjE2MnYtLjA3NWMwLS40MjQtLjAyMS0uNzUtLjA2Mi0uOTc4cy0uMTI3LS4zODUtLjI1Ni0uNDcyYy0uMTMxLS4wODctLjMzMi0uMTMtLjYwNS0uMTNoLS42MjJ2My41MjFaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTY3Ljk5NSwxOS43NzRWNy43NDNoNC4wMzN2MS41NzloLTIuMjAxdjMuNWgyLjA5MnYxLjU0NWgtMi4wOTJ2My44MjhoMi4yODN2MS41NzloLTQuMTE1WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00MS4wMTcsMzYuNjc2Yy0uNzAyLDAtMS4xODgtLjI1NS0xLjQ1OS0uNzY2LS4yNzEtLjUxMS0uNDEyLTEuMTg4LS40MjEtMi4wM3YtLjY1NmMwLS41NDcuMDc5LS45OTEuMjM1LTEuMzMzLjE1OC0uMzQyLjM4Mi0uNjIuNjc0LS44MzRzLjY0MS0uNDAxLDEuMDQ2LS41NjEuODU2LS4zMywxLjM1NC0uNTEzdi0uODk2YzAtLjM0Ny0uMDE0LS42MjMtLjA0MS0uODMxLS4wMjctLjIwNy0uMDg5LS4zNTgtLjE4NS0uNDU0cy0uMjQ0LS4xNDQtLjQ0NC0uMTQ0Yy0uMTk2LDAtLjM0NS4wNDktLjQ0OC4xNDYtLjEwMi4wOTktLjE3Mi4yNDktLjIwOC40NTEtLjAzNi4yMDMtLjA1NS40NjItLjA1NS43NzZ2LjQ1OGgtMS43OTF2LS4zMDhjMC0uNDcuMDQtLjg4OS4xMi0xLjI1OC4wNzktLjM2OS4yMTUtLjY4My40MDYtLjk0LjE5MS0uMjU3LjQ1Mi0uNDUzLjc4My0uNTg4LjMzLS4xMzQuNzQ2LS4yMDEsMS4yNDctLjIwMS40NDIsMCwuODIuMDYyLDEuMTM1LjE4OC4zMTQuMTI2LjU2OS4zMTIuNzY2LjU2MS4xOTYuMjQ5LjM0LjU2LjQzMS45MzRzLjEzNy44MDkuMTM3LDEuMzA2djcuMzloLTEuODI1di0xLjAxOWMtLjA1NS4xOTYtLjE0OC4zOC0uMjguNTUtLjEzMi4xNzItLjI5Ny4zMS0uNDk2LjQxNC0uMTk3LjEwNC0uNDI1LjE1Ny0uNjguMTU3Wk00MS42NDYsMzUuMjgyYy4yMjgsMCwuNDEtLjA4Mi41NDctLjI0NnMuMjIxLS4zMy4yNTMtLjQ5OXYtMy41MjdjLS4yNzMuMTIzLS41MDQuMjM4LS42OS4zNDYtLjE4Ny4xMDYtLjMzNy4yMjQtLjQ1MS4zNTJzLS4xOTYuMjc4LS4yNDYuNDUxLS4wNzUuMzg1LS4wNzUuNjM2djEuMTQ4YzAsLjQ3LjA0OS44MS4xNDcsMS4wMjIuMDk4LjIxMS4yNy4zMTcuNTE2LjMxN1oiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDguNDg5LDM2LjU3NHYtMTIuMDMxaDQuMTI5djEuNTkzaC0yLjI5N3YzLjE5OWgyLjEzM3YxLjZoLTIuMTMzdjUuNjRoLTEuODMyWiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik01NS4zNTksMzYuNjc2Yy0uNzAyLDAtMS4xODgtLjI1NS0xLjQ1OS0uNzY2LS4yNzEtLjUxMS0uNDEyLTEuMTg4LS40MjEtMi4wM3YtLjY1NmMwLS41NDcuMDc5LS45OTEuMjM1LTEuMzMzLjE1OC0uMzQyLjM4Mi0uNjIuNjc0LS44MzRzLjY0MS0uNDAxLDEuMDQ2LS41NjEuODU2LS4zMywxLjM1NC0uNTEzdi0uODk2YzAtLjM0Ny0uMDE0LS42MjMtLjA0MS0uODMxLS4wMjctLjIwNy0uMDg5LS4zNTgtLjE4NS0uNDU0cy0uMjQ0LS4xNDQtLjQ0NC0uMTQ0Yy0uMTk2LDAtLjM0NS4wNDktLjQ0OC4xNDYtLjEwMi4wOTktLjE3Mi4yNDktLjIwOC40NTEtLjAzNi4yMDMtLjA1NS40NjItLjA1NS43NzZ2LjQ1OGgtMS43OTF2LS4zMDhjMC0uNDcuMDQtLjg4OS4xMi0xLjI1OC4wNzktLjM2OS4yMTUtLjY4My40MDYtLjk0LjE5MS0uMjU3LjQ1Mi0uNDUzLjc4My0uNTg4LjMzLS4xMzQuNzQ2LS4yMDEsMS4yNDctLjIwMS40NDIsMCwuODIuMDYyLDEuMTM1LjE4OC4zMTQuMTI2LjU2OS4zMTIuNzY2LjU2MS4xOTYuMjQ5LjM0LjU2LjQzMS45MzRzLjEzNy44MDkuMTM3LDEuMzA2djcuMzloLTEuODI1di0xLjAxOWMtLjA1NS4xOTYtLjE0OC4zOC0uMjguNTUtLjEzMi4xNzItLjI5Ny4zMS0uNDk2LjQxNC0uMTk3LjEwNC0uNDI1LjE1Ny0uNjguMTU3Wk01NS45ODgsMzUuMjgyYy4yMjgsMCwuNDEtLjA4Mi41NDctLjI0NnMuMjIxLS4zMy4yNTMtLjQ5OXYtMy41MjdjLS4yNzMuMTIzLS41MDQuMjM4LS42OS4zNDYtLjE4Ny4xMDYtLjMzNy4yMjQtLjQ1MS4zNTJzLS4xOTYuMjc4LS4yNDYuNDUxLS4wNzUuMzg1LS4wNzUuNjM2djEuMTQ4YzAsLjQ3LjA0OS44MS4xNDcsMS4wMjIuMDk4LjIxMS4yNy4zMTcuNTE2LjMxN1oiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNjAuMzE1LDM2LjU3NHYtMTAuMjU0aDEuODEydjEuMTc2Yy4wOTEtLjM1MS4yODItLjY1NS41NzQtLjkxMi4yOTItLjI1OC42NDktLjM4NywxLjA3My0uMzg3LjU5MywwLDEuMDM3LjE5NywxLjMzMy41OTIuMjk2LjM5NC40NDQuOTY1LjQ0NCwxLjcxMnY4LjA3M2gtMS44MTJ2LTcuOTY0YzAtLjI5Ni0uMDY3LS41MjgtLjIwMS0uNjk3LS4xMzUtLjE2OS0uMzE4LS4yNTMtLjU1MS0uMjUzLS4xODcsMC0uMzQ2LjA1MS0uNDc1LjE1NC0uMTMxLjEwMi0uMjI4LjI0My0uMjkxLjQyNC0uMDYzLjE4LS4wOTYuMzkxLS4wOTYuNjMydjcuNzA0aC0xLjgxMloiIGZpbGw9IiNmZmYiLz48L3N2Zz4=';
+image.src=fan?yaafSrc:area5DefaultButtonSrc;
+image.alt=fan?'You Are A Fan':'Become A Fan';
+button.setAttribute('aria-label',fan?'You Are A Fan':'Become A Fan');
+
+button.href='#';
+button.onclick=function(event){
+event.preventDefault();
+if(triggerFanAction()){
+var checks=0;
+var poll=setInterval(function(){
+refreshArea5();
+if(++checks>=8) clearInterval(poll);
+},300);
+}
+};
+
+if(source){
+source.style.display='none';
+source.setAttribute('aria-hidden','true');
+source.setAttribute('data-lcars-mkii-adapted','true');
+}
+
+area.setAttribute('data-lcars-area5-built','true');
+return true;
+}
+
+function refreshArea5(){
+var area=document.getElementById('lcars-mkii-area-5');
+if(!area) return false;
+var source=findFanModule();
+var action=findFanAction(source);
+var count=document.querySelector('#lcars-area5-fan-count');
+var comments=document.querySelector('#lcars-area5-comment-count');
+var button=document.querySelector('#lcars-area5-fan-button');
+var image=document.querySelector('#lcars-area5-fan-button-image');
+if(!count||!comments||!button||!image) return false;
+
+count.textContent=extractFanCount(source);
+comments.textContent=countStatusFeed();
+var popButton=document.getElementById('lcars-area5-population-button');
+var statusButton=document.getElementById('lcars-area5-status-button');
+if(popButton){popButton.querySelector('.lcars-area5-info-label').textContent='POPULATION: '+count.textContent;popButton.setAttribute('aria-label','POPULATION: '+count.textContent);}
+if(statusButton){statusButton.querySelector('.lcars-area5-info-label').textContent='STATUS FEED: '+comments.textContent;statusButton.setAttribute('aria-label','STATUS FEED: '+comments.textContent);}
+
+var fan=isFan(source,action);
+if(!area5DefaultButtonSrc) area5DefaultButtonSrc=image.src;
+var yaafSrc='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI0NSIgdmlld0JveD0iMCAwIDgwIDQ1Ij48cmVjdCBpZD0iYiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjQ1IiByeD0iOCIgcnk9IjgiIGZpbGw9IiM4ZjJhMmEiLz48cGF0aCBpZD0iYyIgZD0iTTI3LjgxNiwyMS43NjVsLS4wMDIsMS4zMDRjLS4xNCwxLjA5OS0uNjM5LDIuMDc1LTEuMzUyLDIuOTE1bC0uODA5LjgxOC0uMzM3LjI5NC0uNTQ3LjQwNS0uNjE2LjQwNC4yMDEsMS43MTMuMTM0LDEuMzM2Yy0uMTA4LjEyMS0uMzMxLjE2Mi0uNDYxLjA4MWwtMS4zODEtMi4zN2MtMS42NjguNzI0LTMuMzksMS4wNTktNS4xNzgsMS4yMTEtMS44MzkuMDc4LTMuNDk2LS4wMTEtNS4zMjUtLjQ1NmwtMi40ODIsMy4xMThjLS4wNjYuMDgzLS4yNy4wNjYtLjMzNi4wMTktLjA4Mi0uMDU5LS4xMTktLjE5LS4xMS0uMzEzbC4wNTgtLjc3MS4wMzktLjU0NC4yMzMtMi40MTFjLS43ODEtLjM2OC0xLjUzLS43NzItMi4xOTYtMS4zMjJsLS40MjQtLjM1Yy0uMjkxLS4yODUtLjU4NC0uNTQ5LS44NTEtLjg2My0xLjg2My0yLjE5Ni0xLjg2MS00Ljk0NiwwLTcuMTQzLjI1OS0uMzA2LjUzNS0uNTcxLjgzNC0uODM4LDEuNjcyLTEuNDk5LDMuOTE3LTIuMzU4LDYuMTAzLTIuNzg5Ljg5NC0xLjk3NywyLjA5Ny0zLjg0OCwzLjQ2Mi01LjQ5Ny4wNjUtLjA3OC4xOC0uMTUzLjI1Ny0uMTQ3LjA5MS4wMDcuMTgyLjA4OS4yNTIuMTgsMS4zNzcsMS43ODIsMi41NTEsMy42ODMsMy41NDUsNS42OTEsMi4zMTguNjAzLDQuNDE4LDEuNjUsNS45NzksMy40NDcuNjg2Ljg0NSwxLjE4LDEuODA2LDEuMzEsMi44NzhaTTkuMTk0LDI2LjI1M2wuNjA2LjMzOWMuNDk4LTMuMTg1LDEuMTY0LTYuMjQ1LDIuMzEtOS4yNzctMi4wMTkuNTkxLTQuMTk0LDEuNjg0LTUuMjEyLDMuNTY1LS42MDYsMS4xMDEtLjQ5NSwyLjM3LjE5OCwzLjQwNC41MTEuNzYzLDEuMzA1LDEuNTI0LDIuMDk5LDEuOTY4Wk0yNS43MzYsMjEuMDVjLS43NTMtMS42NjEtMi41MDMtMi43MzMtNC4yMzEtMy40MDcsMS4wNzcsMi42NjMsMS44NjQsNS40MjIsMi4zMzksOC4yOTgsMS42NTctMS4xMzYsMi43NTMtMi45OTIsMS44OTItNC44OTFaTTE1LjU3LDI4LjA2OWMuNTM2LjAzOCwxLjAyOS4wMjMsMS41NDEtLjAwNSwxLjU3Mi0uMDg3LDMuMDktLjM4Nyw0LjU3Ny0uOTU2bC0xLjgyNi0yLjc0N2MtLjE4Mi0uMjc0LS4zNjItLjQ5NS0uNjAxLS43MjQtLjE3OC0uMDQ2LS4zNTEtLjAzLS41MTQuMDU1bC0uNjU3LjM0NmMtMS4xMzIuNjg2LTIuMTcyLDEuNDY2LTMuMTEyLDIuMzk0bC0xLjQzMSwxLjQxMy45NTguMTQuNDk1LjA0NS41NjguMDRaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM0LjQxLDE5Ljc3NHYtNC44MDVsLTIuMDE3LTcuMjI2aDEuNzVsMS4xODksNC40OThoLjAyN2wxLjA2LTQuNDk4aDEuNzQzbC0xLjkyMSw3LjIyNnY0LjgwNWgtMS44MzJaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQxLjI1OSwxOS44OTdjLS40OTIsMC0uOTA0LS4wNzYtMS4yMzctLjIyOS0uMzMzLS4xNTMtLjU5Ni0uMzc0LS43OS0uNjY0LS4xOTMtLjI4OS0uMzMyLS42NDMtLjQxNi0xLjA1OS0uMDg1LS40MTgtLjEyNy0uODkzLS4xMjctMS40MjZ2LTMuODM0YzAtLjY0My4wODMtMS4yMTEuMjUtMS43MDYuMTY2LS40OTQuNDM4LS44ODEuODE2LTEuMTYyLjM3OC0uMjc5Ljg4LS40MiwxLjUwNC0uNDIuNDc0LDAsLjg3NC4wOCwxLjE5OS4yMzkuMzI2LjE1OS41ODguMzg2Ljc4Ny42ODEuMTk3LjI5My4zNDMuNjQxLjQzNCwxLjA0MnMuMTM3Ljg0My4xMzcsMS4zMjZ2My44MzRjMCwuNTI0LS4wNC45OTMtLjExOSwxLjQwOC0uMDguNDE1LS4yMTcuNzctLjQxLDEuMDYyLS4xOTQuMjk1LS40NTUuNTE5LS43ODMuNjc0cy0uNzQzLjIzMi0xLjI0NC4yMzJaTTQxLjI1OSwxOC40MzRjLjIwNSwwLC4zNi0uMDYyLjQ2NS0uMTg4LjEwNC0uMTI2LjE3Ni0uMy4yMTItLjUyM3MuMDU1LS40OC4wNTUtLjc3MnYtNC41ODZjMC0uMzEtLjAyMS0uNTc2LS4wNjItLjhzLS4xMTQtLjM5Ni0uMjE5LS41Mi0uMjU1LS4xODUtLjQ1MS0uMTg1Yy0uMjA1LDAtLjM2MS4wNjItLjQ2OS4xODUtLjEwNi4xMjMtLjE4LjI5Ni0uMjE5LjUyLS4wMzguMjI0LS4wNTguNDktLjA1OC44djQuNTg2YzAsLjI5Mi4wMi41NDkuMDU4Ljc3Mi4wMzkuMjI0LjExMi4zOTcuMjE5LjUyMy4xMDcuMTI1LjI2NC4xODguNDY5LjE4OFoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDcuMjI3LDE5LjkwNGMtLjQwNSwwLS43NDQtLjA5MS0xLjAxNS0uMjczLS4yNzEtLjE4My0uNDc1LS40NTQtLjYwOS0uODE3LS4xMzQtLjM2MS0uMjAxLS44MTYtLjIwMS0xLjM2M3YtNy45MjloMS44MTh2Ny42NDljMCwuMzkyLjA0OC42OTcuMTQ0LjkxNnMuMjk2LjMyOC42MDIuMzI4Yy4zMTksMCwuNTM2LS4xMjQuNjUzLS4zNzIuMTE1LS4yNDkuMTc0LS41MzUuMTc0LS44NThsLjAwNy03LjY2M2gxLjgwNXYxMC4yNTNoLTEuODEydi0xLjA2NmMtLjEyOC4zNDctLjMxMi42MzMtLjU1NC44NTctLjI0MS4yMjctLjU3OS4zMzktMS4wMTIuMzM5WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik01NC4xNzIsMTkuNzc0bDEuNzE2LTEyLjAzMWgyLjQybDEuODI1LDEyLjAzMWgtMS43MDlsLS4yODctMi4xNDZoLTEuOTQxbC0uMjYsMi4xNDZoLTEuNzY0Wk01Ni4zNzMsMTYuMTU4aDEuNTcybC0uODA3LTYuMDQzaC0uMDI3bC0uNzM4LDYuMDQzWiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MS4yMiwxOS43NzRWNy43NDNoMy4wMjhjLjYyOSwwLDEuMDk5LjEyMywxLjQwOC4zNjlzLjUxNC42MDYuNjEyLDEuMDhjLjA5OC40NzQuMTQ2LDEuMDUzLjE0NiwxLjczNiwwLC43MDYtLjA3MiwxLjI2Mi0uMjE1LDEuNjY0LS4xNDUuNDA0LS40MzcuNjc0LS44NzkuODExLjIxLjAzNi4zODUuMTIyLjUyNi4yNTYuMTQyLjEzNS4yNTUuMzMxLjM0Mi41ODguMDg3LjI1OC4xNDkuNTg4LjE4OC45OTIuMDM4LjQwMi4wNTguODk2LjA1OCwxLjQ3OXYuMzgzYzAsLjIxLDAsLjQ1Ny4wMDMuNzQxLjAwMy4yODUuMDA2LjU2OS4wMTEuODUycy4wMTIuNTI0LjAyMS43MjUuMDIxLjMxOS4wMzQuMzU1aC0xLjgzMmMtLjAxNC0uMDIyLS4wMjQtLjE0MS0uMDMtLjM1Mi0uMDA4LS4yMTMtLjAxNC0uNDgyLS4wMjEtLjgxMS0uMDA2LS4zMjgtLjAxMS0uNjgyLS4wMTQtMS4wNi0uMDAyLS4zNzgtLjAwMy0uNzUxLS4wMDMtMS4xMTh2LS45NzRjMC0uMzYtLjAyNi0uNjMyLS4wNzktLjgxNy0uMDUyLS4xODQtLjE0Ny0uMzEyLS4yODctLjM4Ni0uMTM5LS4wNzMtLjMzOC0uMTE2LS41OTgtLjEzbC0uNTg4LS4wMzR2NS42OGgtMS44MzJaTTYzLjA1OSwxMi42NzJoLjczMWMuMjI0LDAsLjM5My0uMDUuNTEtLjE1LjExNS0uMTAxLjE5NS0uMjg1LjIzOC0uNTU0LjA0NC0uMjY5LjA2NS0uNjU2LjA2NS0xLjE2MnYtLjA3NWMwLS40MjQtLjAyMS0uNzUtLjA2Mi0uOTc4cy0uMTI3LS4zODUtLjI1Ni0uNDcyYy0uMTMxLS4wODctLjMzMi0uMTMtLjYwNS0uMTNoLS42MjJ2My41MjFaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTY3Ljk5NSwxOS43NzRWNy43NDNoNC4wMzN2MS41NzloLTIuMjAxdjMuNWgyLjA5MnYxLjU0NWgtMi4wOTJ2My44MjhoMi4yODN2MS41NzloLTQuMTE1WiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00MS4wMTcsMzYuNjc2Yy0uNzAyLDAtMS4xODgtLjI1NS0xLjQ1OS0uNzY2LS4yNzEtLjUxMS0uNDEyLTEuMTg4LS40MjEtMi4wM3YtLjY1NmMwLS41NDcuMDc5LS45OTEuMjM1LTEuMzMzLjE1OC0uMzQyLjM4Mi0uNjIuNjc0LS44MzRzLjY0MS0uNDAxLDEuMDQ2LS41NjEuODU2LS4zMywxLjM1NC0uNTEzdi0uODk2YzAtLjM0Ny0uMDE0LS42MjMtLjA0MS0uODMxLS4wMjctLjIwNy0uMDg5LS4zNTgtLjE4NS0uNDU0cy0uMjQ0LS4xNDQtLjQ0NC0uMTQ0Yy0uMTk2LDAtLjM0NS4wNDktLjQ0OC4xNDYtLjEwMi4wOTktLjE3Mi4yNDktLjIwOC40NTEtLjAzNi4yMDMtLjA1NS40NjItLjA1NS43NzZ2LjQ1OGgtMS43OTF2LS4zMDhjMC0uNDcuMDQtLjg4OS4xMi0xLjI1OC4wNzktLjM2OS4yMTUtLjY4My40MDYtLjk0LjE5MS0uMjU3LjQ1Mi0uNDUzLjc4My0uNTg4LjMzLS4xMzQuNzQ2LS4yMDEsMS4yNDctLjIwMS40NDIsMCwuODIuMDYyLDEuMTM1LjE4OC4zMTQuMTI2LjU2OS4zMTIuNzY2LjU2MS4xOTYuMjQ5LjM0LjU2LjQzMS45MzRzLjEzNy44MDkuMTM3LDEuMzA2djcuMzloLTEuODI1di0xLjAxOWMtLjA1NS4xOTYtLjE0OC4zOC0uMjguNTUtLjEzMi4xNzItLjI5Ny4zMS0uNDk2LjQxNC0uMTk3LjEwNC0uNDI1LjE1Ny0uNjguMTU3Wk00MS42NDYsMzUuMjgyYy4yMjgsMCwuNDEtLjA4Mi41NDctLjI0NnMuMjIxLS4zMy4yNTMtLjQ5OXYtMy41MjdjLS4yNzMuMTIzLS41MDQuMjM4LS42OS4zNDYtLjE4Ny4xMDYtLjMzNy4yMjQtLjQ1MS4zNTJzLS4xOTYuMjc4LS4yNDYuNDUxLS4wNzUuMzg1LS4wNzUuNjM2djEuMTQ4YzAsLjQ3LjA0OS44MS4xNDcsMS4wMjIuMDk4LjIxMS4yNy4zMTcuNTE2LjMxN1oiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDguNDg5LDM2LjU3NHYtMTIuMDMxaDQuMTI5djEuNTkzaC0yLjI5N3YzLjE5OWgyLjEzM3YxLjZoLTIuMTMzdjUuNjRoLTEuODMyWiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik01NS4zNTksMzYuNjc2Yy0uNzAyLDAtMS4xODgtLjI1NS0xLjQ1OS0uNzY2LS4yNzEtLjUxMS0uNDEyLTEuMTg4LS40MjEtMi4wM3YtLjY1NmMwLS41NDcuMDc5LS45OTEuMjM1LTEuMzMzLjE1OC0uMzQyLjM4Mi0uNjIuNjc0LS44MzRzLjY0MS0uNDAxLDEuMDQ2LS41NjEuODU2LS4zMywxLjM1NC0uNTEzdi0uODk2YzAtLjM0Ny0uMDE0LS42MjMtLjA0MS0uODMxLS4wMjctLjIwNy0uMDg5LS4zNTgtLjE4NS0uNDU0cy0uMjQ0LS4xNDQtLjQ0NC0uMTQ0Yy0uMTk2LDAtLjM0NS4wNDktLjQ0OC4xNDYtLjEwMi4wOTktLjE3Mi4yNDktLjIwOC40NTEtLjAzNi4yMDMtLjA1NS40NjItLjA1NS43NzZ2LjQ1OGgtMS43OTF2LS4zMDhjMC0uNDcuMDQtLjg4OS4xMi0xLjI1OC4wNzktLjM2OS4yMTUtLjY4My40MDYtLjk0LjE5MS0uMjU3LjQ1Mi0uNDUzLjc4My0uNTg4LjMzLS4xMzQuNzQ2LS4yMDEsMS4yNDctLjIwMS40NDIsMCwuODIuMDYyLDEuMTM1LjE4OC4zMTQuMTI2LjU2OS4zMTIuNzY2LjU2MS4xOTYuMjQ5LjM0LjU2LjQzMS45MzRzLjEzNy44MDkuMTM3LDEuMzA2djcuMzloLTEuODI1di0xLjAxOWMtLjA1NS4xOTYtLjE0OC4zOC0uMjguNTUtLjEzMi4xNzItLjI5Ny4zMS0uNDk2LjQxNC0uMTk3LjEwNC0uNDI1LjE1Ny0uNjguMTU3Wk01NS45ODgsMzUuMjgyYy4yMjgsMCwuNDEtLjA4Mi41NDctLjI0NnMuMjIxLS4zMy4yNTMtLjQ5OXYtMy41MjdjLS4yNzMuMTIzLS41MDQuMjM4LS42OS4zNDYtLjE4Ny4xMDYtLjMzNy4yMjQtLjQ1MS4zNTJzLS4xOTYuMjc4LS4yNDYuNDUxLS4wNzUuMzg1LS4wNzUuNjM2djEuMTQ4YzAsLjQ3LjA0OS44MS4xNDcsMS4wMjIuMDk4LjIxMS4yNy4zMTcuNTE2LjMxN1oiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNjAuMzE1LDM2LjU3NHYtMTAuMjU0aDEuODEydjEuMTc2Yy4wOTEtLjM1MS4yODItLjY1NS41NzQtLjkxMi4yOTItLjI1OC42NDktLjM4NywxLjA3My0uMzg3LjU5MywwLDEuMDM3LjE5NywxLjMzMy41OTIuMjk2LjM5NC40NDQuOTY1LjQ0NCwxLjcxMnY4LjA3M2gtMS44MTJ2LTcuOTY0YzAtLjI5Ni0uMDY3LS41MjgtLjIwMS0uNjk3LS4xMzUtLjE2OS0uMzE4LS4yNTMtLjU1MS0uMjUzLS4xODcsMC0uMzQ2LjA1MS0uNDc1LjE1NC0uMTMxLjEwMi0uMjI4LjI0My0uMjkxLjQyNC0uMDYzLjE4LS4wOTYuMzkxLS4wOTYuNjMydjcuNzA0aC0xLjgxMloiIGZpbGw9IiNmZmYiLz48L3N2Zz4=';
+image.src=fan?yaafSrc:area5DefaultButtonSrc;
+image.alt=fan?'You Are A Fan':'Become A Fan';
+button.setAttribute('aria-label',fan?'You Are A Fan':'Become A Fan');
+button.href='#';
+button.onclick=function(event){
+event.preventDefault();
+if(triggerFanAction()){
+var checks=0;
+var poll=setInterval(function(){
+refreshArea5();
+if(++checks>=8) clearInterval(poll);
+},300);
+}
+};
+
+return true;
+}
+
+/* =========================================================
+AREA 5 - NAVIGATION / STATUS
+========================================================= */
+
+/* Authoritative button map.
+Assembly coordinates are Y=168,208,...,528.
+Panel 2 begins at Y=105, so DOM-local Y is Assembly Y - 105.
+Front Cap = X0..32, Main = X32..128, both 32px high. */
+var MENU=[
+{id:'home',label:'HOME',y:168,top:63,href:'/'},
+{id:'personnel',label:'PERSONNEL',y:208,top:103,href:'/characters'},
+{id:'computer-core',label:'COMPUTER CORE',y:248,top:143,href:'/wikis/main-page'},
+{id:'mission-logs',label:'MISSION LOGS',y:288,top:183,href:'/adventure-log'},
+{id:'resources',label:'RESOURCES',y:328,top:223,href:'/wikis/resources'},
+{id:'engineering',label:'ENGINEERING',y:368,top:263,href:'/wikis/engineering'},
+{id:'exobiology',label:'EXOBIOLOGY',y:408,top:303,href:'/wikis/exobiology'},
+{id:'navigation',label:'NAVIGATION',y:448,top:343,href:'/maps'},
+{id:'science',label:'SCIENCE',y:488,top:383,href:'/wikis/science'},
+{id:'starships',label:'STARSHIPS',y:528,top:423,href:'/wikis/starships'}
+];
+
+function addMenuLinks(){
+var panel=document.querySelector('#lcars-mkii-op-shell-host .panel-panel-2 .lcars-panel-content');
+if(!panel) return false;
+
+var items=panel.querySelectorAll('.lcars-menu-item[data-button]');
+return items.length===MENU.length;
+}
+
+function updateMenuActiveState(){
+var panel=document.querySelector('#lcars-mkii-op-shell-host .panel-panel-2 .lcars-panel-content');
+if(!panel||!window.location) return false;
+
+var path=window.location.pathname||'/';
+var activeId='';
+
+MENU.forEach(function(item){
+var target=item.href||'/';
+var match=false;
+
+if(target==='/'){
+match=path==='/';
+}else{
+match=path===target || path.indexOf(target+'/')===0;
+}
+
+if(match && (!activeId || target.length>(MENU.filter(function(m){return m.id===activeId;})[0]||{href:''}).href.length)){
+activeId=item.id;
+}
+});
+
+MENU.forEach(function(item){
+var button=panel.querySelector('.lcars-menu-item[data-button="'+item.id+'"]');
+if(!button) return;
+
+var active=item.id===activeId;
+button.classList.toggle('is-active',active);
+
+if(active){
+button.setAttribute('aria-current','page');
+button.setAttribute('data-lcars-mkii-active','true');
+}else{
+button.removeAttribute('aria-current');
+button.removeAttribute('data-lcars-mkii-active');
+}
+});
+
+return true;
+}
+
+/* =========================================================
+AREA 1-5 - PAGE ADAPTATION
+========================================================= */
+
+function adaptPage(){
+var result={
+area1:movePageContent(),
+area2:moveGameMaster(),
+area3:false,
+area4:moveCampaignStream(),
+area5:buildArea5()
+};
+
+document.body.classList.add('lcars-mkii-op-active');
+document.documentElement.classList.add('lcars-mkii-op-active');
+document.documentElement.style.background='#000';
+document.body.style.background='#000';
+
+var wrapper=document.querySelector('#wrapper');
+if(wrapper) wrapper.style.background='#000';
+
+var content=document.querySelector('#content');
+if(content) content.style.background='#000';
+
+buildGameMaster();
+startCampaignStreamAutoScroll();
+refreshArea5();
+result.menu=addMenuLinks();
+result.menuActive=updateMenuActiveState();
+return result;
+}
+
+/* =========================================================
+STARTUP
+========================================================= */
+
+function init(){
+if(!isHomePage()) return;
+
+fetch(SHELL_URL,{cache:'no-store'})
+.then(function(response){
+if(!response.ok) throw new Error('HTTP '+response.status);
+return response.text();
+})
+.then(function(html){
+addShell(html);
+var result=adaptPage();
+window.LCARS_MKII_OP_BRIDGE={
+version:VERSION,
+pageType:'home',
+shellUrl:SHELL_URL,
+result:result,
+adapt:adaptPage
+};
+})
+.catch(function(error){
+console.warn('LCARS Mk II shell could not be loaded from '+SHELL_URL+'. Check fetch/CORS access.',error);
+});
+}
+
+if(document.readyState==='loading'){
+document.addEventListener('DOMContentLoaded',init);
+}else{
+init();
+}
+
+})();
+(function(){'use strict';
+var PID='lcars-mkii-personnel-record',CID='lcars-mkii-personnel-container',URL='/wikis/lcars-personnel-data',POST='U.S.S. Excalibur (NCC-26517)';
+var T=28,WAIT=500,STEP=180,HOLD=1500,timer=[],i=0,rows=[],portraits={},ready={},cursor;
+function later(fn,ms){var id=setTimeout(function(){var p=timer.indexOf(id);if(p>-1)timer.splice(p,1);fn();},ms);timer.push(id);}
+function stop(){timer.forEach(clearTimeout);timer=[];if(cursor&&cursor.parentNode)cursor.parentNode.removeChild(cursor);}
+function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+function getPortraits(){var out={};document.querySelectorAll('.sidebar-party-members .player-characters .player-character').forEach(function(c){var a=c.querySelector('a[href*="/characters/"]'),im=c.querySelector('img.game-content-image'),m=a&&a.href.match(/\/characters\/([^/?#]+)/);if(m&&im)out[norm(m[1])]=im.src||'';});return out;}
+function portrait(name){var n=norm(name),k;for(k in portraits)if(k.indexOf(n)>-1||n.indexOf(k)>-1)return portraits[k];return '';}
+function val(n,label){var s=(n.textContent||'').replace(/\s+/g,' ').trim(),p=label+':';return s.toUpperCase().indexOf(p)===0?s.slice(p.length).trim():'';}
+function parse(html){var b=document.createElement('div'),out=[];b.innerHTML=html;b.querySelectorAll('h3').forEach(function(h){var r={name:h.textContent.trim(),rank:'',assignment:'',summary:''},n=h.nextElementSibling;while(n&&n.tagName.toLowerCase()!=='h3'){r.rank=val(n,'RANK')||r.rank;r.assignment=val(n,'ASSIGNMENT')||r.assignment;r.summary=val(n,'PROFILE SUMMARY')||val(n,'SUMMARY')||r.summary;n=n.nextElementSibling;}if(r.name&&r.rank&&r.assignment&&r.summary)out.push(r);});return out;}
+function panel(){var p=document.createElement('div');p.id=PID;p.innerHTML='<div class="lcars-personnel-identity"><div class="lcars-personnel-portrait-wrap"><img class="lcars-personnel-portrait" alt=""></div><div class="lcars-personnel-ident-text"><div class="lcars-personnel-rank"></div><div class="lcars-personnel-name"></div></div></div><div class="lcars-personnel-rule"></div><div class="lcars-personnel-content"><div class="lcars-personnel-section"><div class="lcars-personnel-label assignment-label">ASSIGNMENT:</div><div class="lcars-personnel-value assignment"></div></div><div class="lcars-personnel-section"><div class="lcars-personnel-label summary-label">PROFILE SUMMARY:</div><div class="lcars-personnel-summary"></div></div><div class="lcars-personnel-section posting"><div class="lcars-personnel-label posting-label">CURRENT POSTING:</div><div class="lcars-personnel-posting-value"></div></div></div>';return p;}
+function put(el){if(!cursor){cursor=document.createElement('span');cursor.className='lcars-personnel-cursor';}if(cursor.parentNode)cursor.parentNode.removeChild(cursor);el.appendChild(cursor);}
+function show(el,text,done){el.textContent='';put(el);var s=String(text||'').replace(/\s+/g,' ').trim(),n=0;function go(){if(n>=s.length)return later(done||function(){},STEP);var x=document.createTextNode(s.charAt(n++));el.insertBefore(x,cursor);later(go,T);}go();}
+function reveal(label,done){put(label);later(function(){label.classList.add('is-visible');later(done,STEP);},STEP);}
+function fade(el,done){el.classList.remove('is-visible');later(function(){el.classList.add('is-visible');later(done,500);},80);}
+function clear(p){p.querySelectorAll('.lcars-personnel-rank,.lcars-personnel-name,.assignment,.lcars-personnel-summary,.lcars-personnel-posting-value').forEach(function(n){n.textContent='';});p.querySelectorAll('.assignment-label,.summary-label,.posting-label').forEach(function(n){n.classList.remove('is-visible');});if(cursor&&cursor.parentNode)cursor.parentNode.removeChild(cursor);}
+function play(r,done){
+stop();var p=document.getElementById(PID);if(!p)return;clear(p);var q=s=>p.querySelector(s),im=q('.lcars-personnel-portrait'),src=portrait(r.name);
+if(src){im.alt=r.name;if(ready[src]&&ready[src].complete&&ready[src].naturalWidth){im.src=ready[src].src;im.classList.add('is-visible');}else{var ri=ready[src]||new Image();ri.onload=function(){im.src=ri.src;im.classList.add('is-visible');};ri.onerror=function(){};ri.src=src;}}
+later(function(){
+if(src)later(function(){im.classList.add('is-visible');},0);
+show(q('.lcars-personnel-rank'),r.rank,function(){
+show(q('.lcars-personnel-name'),r.name,function(){
+later(function(){
+reveal(q('.assignment-label'),function(){
+show(q('.assignment'),r.assignment,function(){
+reveal(q('.summary-label'),function(){
+show(q('.lcars-personnel-summary'),r.summary,function(){
+reveal(q('.posting-label'),function(){
+put(q('.lcars-personnel-posting-value'));later(function(){
+show(q('.lcars-personnel-posting-value'),POST,function(){
+later(function(){
+if(cursor)cursor.classList.add('is-hold');
+later(function(){if(cursor&&cursor.parentNode)cursor.parentNode.removeChild(cursor);if(done)done();},HOLD);
+},HOLD);
+});
+},HOLD);
+});
+});
+});
+});
+});
+},WAIT);
+});
+});
+});
+}
+function next(){var p=document.getElementById(PID);if(!p||!rows.length)return;clear(p);later(function(){play(rows[i++%rows.length],next);},250);}
+function prepare(){portraits=getPortraits();var target=document.getElementById('lcars-mkii-area-3');if(!target||!Object.keys(portraits).length)return false;var old=document.getElementById(CID);if(old)old.remove();var cards=document.querySelector('.sidebar-party-members .player-characters');if(cards)cards.classList.add('lcars-hidden');var c=document.createElement('div');c.id=CID;target.appendChild(c);c.appendChild(panel());var side=document.querySelector('#sidebar');if(side)side.style.display='none';return true;}
+function load(){if(!prepare())return false;fetch(URL).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){rows=parse(h);var list=[],seen={};rows.forEach(function(r){var u=portrait(r.name);if(u&&!seen[u]){seen[u]=1;list.push(u);}});if(!list.length){if(rows.length)play(rows[i++%rows.length],next);return;}var left=list.length;list.forEach(function(u){var im=new Image();ready[u]=im;im.onload=im.onerror=function(){if(--left===0&&rows.length)play(rows[i++%rows.length],next);};im.src=u;});}).catch(function(){});return true;}
+function wait(){var tries=0,iv=setInterval(function(){if(document.getElementById('lcars-mkii-area-3')&&document.querySelector('.sidebar-party-members .player-characters .player-character')){if(load())clearInterval(iv);}if(++tries>80)clearInterval(iv);},250);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
+})();
+
+/* =========================================================
+MAIN PAGE - ASSEMBLY 1.10b ADAPTER
+This page-specific addition leaves the v0.10.135 Home implementation above unchanged.
+========================================================= */
+(function(){
+"use strict";
+var MAIN_VERSION="0.11.001";
+var MAIN_SHELL_URL="https://cdn.jsdelivr.net/gh/GMHooly/gmhooly@main/lcars-mkii-shell-main-page-v0.11.001.html";
+var HOST_ID="lcars-mkii-main-shell-host";
+
+function isMainPage(){
+  return !!(document.body && document.body.classList.contains("wiki-page-slug-main-page") && (location.pathname||"").replace(/\/+$/,"")==="/wikis/main-page");
+}
+
+function addMainShell(html){
+  var existing=document.getElementById(HOST_ID);
+  if(existing) return existing;
+  var host=document.createElement("div");
+  host.id=HOST_ID;
+  host.innerHTML=html;
+  host.style.cssText="position:relative;left:0;width:1360px;min-width:1360px;height:1030.625px;margin-left:calc((100% - 1360px)/2);margin-top:0;padding:0;background:transparent;z-index:1000;overflow:visible;transform:none;";
+  var banner=document.querySelector("#banner-container");
+  if(banner && banner.parentNode){
+    banner.parentNode.insertBefore(host,banner.nextSibling);
+    host.style.marginTop="-"+(banner.offsetHeight||0)+"px";
+  }else{
+    var target=document.querySelector("#content")||document.querySelector("#wrapper")||document.body;
+    target.insertBefore(host,target.firstChild);
+  }
+  return host;
+}
+
+function moveMainPageContent(host){
+  var source=document.querySelector("main.main-content .wiki-page-container .post-main [itemprop='text']");
+  var target=host.querySelector("#lcars-mkii-main-area-m01-content");
+  if(!source||!target||source===target||target.contains(source)) return false;
+  target.appendChild(source);
+  return true;
+}
+
+function hideNativeNavigation(){
+  var nav=document.querySelector("#campaign-nav");
+  if(!nav) return false;
+  var navNames={"dashboard":1,"secrets":1,"home page":1,"forum":1,"calendar":1,"adventure log":1,"media library":1,"wiki":1,"characters":1,"items":1,"maps":1,"settings":1};
+  nav.querySelectorAll("a").forEach(function(a){
+    var label=(a.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+    if(!navNames[label]) return;
+    a.style.setProperty("display","none","important");
+    var item=a.closest ? a.closest("li") : null;
+    if(item) item.style.setProperty("display","none","important");
+  });
+  return true;
+}
+
+function addTitleOverlays(host){
+  var stage=host.querySelector("#lcars-mkii-main-stage");
+  var layer=host.querySelector("#lcars-mkii-main-title-layer");
+  if(!stage||!layer) return false;
+  var labels=[
+    {pill:"b-area-m05-pill",text:"DIPLOMATIC STATUS"},
+    {pill:"b-area-m06-pill",text:"DATABASE ENTRIES"},
+    {pill:"b-area-m07-pill",text:"LEVEL 2 DIAGNOSTIC"},
+    {pill:"b-area-m08-pill",text:"UFP LOGO"}
+  ];
+  var stageRect=stage.getBoundingClientRect();
+  var scaleX=stageRect.width/(stage.offsetWidth||1024);
+  var scaleY=stageRect.height/(stage.offsetHeight||776);
+  labels.forEach(function(item){
+    var pill=stage.querySelector("#"+item.pill);
+    if(!pill) return;
+    var box=pill.getBoundingClientRect();
+    var left=(box.left-stageRect.left)/scaleX;
+    var top=(box.top-stageRect.top)/scaleY;
+    var width=box.width/scaleX;
+    var height=box.height/scaleY;
+    var label=document.createElement("div");
+    label.className="lcars-mkii-main-title";
+    label.textContent=item.text;
+    label.style.left=left+"px";
+    label.style.top=top+"px";
+    label.style.width=width+"px";
+    label.style.height=height+"px";
+    label.style.fontSize=Math.min(12,height*0.75)+"px";
+    layer.appendChild(label);
+    var size=Math.min(12,height*0.75);
+    while(label.scrollWidth>label.clientWidth && size>8){
+      size-=0.5;
+      label.style.fontSize=size+"px";
+    }
+  });
+  return true;
+}
+
+function activateMenu(host){
+  var active=(location.pathname||"").replace(/\/+$/,"");
+  host.querySelectorAll("#lcars-mkii-main-menu a[data-lcars-menu]").forEach(function(a){
+    var href=a.getAttribute("href")||"";
+    var selected=(href==="/wikis/main-page" && active==="/wikis/main-page");
+    if(selected){a.setAttribute("aria-current","page");a.classList.add("is-active");}
+    else{a.removeAttribute("aria-current");a.classList.remove("is-active");}
+  });
+}
+
+function finishMainPage(html){
+  var host=addMainShell(html);
+  moveMainPageContent(host);
+  hideNativeNavigation();
+  var nativePage=document.querySelector("main.main-content .wiki-page-container");
+  if(nativePage) nativePage.style.setProperty("display","none","important");
+  var sidebar=document.querySelector("#sidebar");
+  if(sidebar) sidebar.style.setProperty("display","none","important");
+  document.documentElement.classList.add("lcars-mkii-main-active");
+  document.body.classList.add("lcars-mkii-main-active");
+  document.documentElement.style.background="#000";
+  document.body.style.background="#000";
+  document.documentElement.style.overflowX="hidden";
+  document.body.setAttribute("data-lcars-mkii-main-version",MAIN_VERSION);
+  addTitleOverlays(host);
+  activateMenu(host);
+  window.LCARS_MKII_MAIN_BRIDGE={version:MAIN_VERSION,pageType:"main",assembly:"1.10b",shellUrl:MAIN_SHELL_URL,hostId:HOST_ID};
+  console.log("LCARS Mk II Main page v"+MAIN_VERSION+" loaded");
+}
+
+function initMainPage(){
+  if(!isMainPage()) return;
+  fetch(MAIN_SHELL_URL,{cache:"no-store"})
+    .then(function(response){if(!response.ok) throw new Error("HTTP "+response.status);return response.text();})
+    .then(finishMainPage)
+    .catch(function(error){console.warn("LCARS Mk II Main page shell could not be loaded from "+MAIN_SHELL_URL,error);});
+}
+
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initMainPage);
+else initMainPage();
+})();
+
+
