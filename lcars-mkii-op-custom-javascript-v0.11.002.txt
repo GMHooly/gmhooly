@@ -647,7 +647,7 @@ This page-specific addition leaves the v0.10.135 Home implementation above uncha
 ========================================================= */
 (function(){
 "use strict";
-var MAIN_VERSION="0.11.001";
+var MAIN_VERSION="0.11.002";
 var MAIN_SHELL_URL="https://cdn.jsdelivr.net/gh/GMHooly/gmhooly@main/lcars-mkii-shell-main-page-v0.11.002.html";
 var HOST_ID="lcars-mkii-main-shell-host";
 
@@ -775,5 +775,4 @@ function initMainPage(){
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initMainPage);
 else initMainPage();
 })();
-
 
